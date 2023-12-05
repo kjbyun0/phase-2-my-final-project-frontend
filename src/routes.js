@@ -2,7 +2,7 @@ import App from './App'
 import GroceryStore from './pages/GroceryStore';
 import MyList from './pages/MyList';
 import MyCart from './pages/MyCart';
-import MyInventory from './pages/MyInventory';
+import MyStorage from './pages/MyStorage';
 // import ErrorPage from './pages/ErrorPage';
 
 const routes = [
@@ -24,8 +24,8 @@ const routes = [
                 element: <MyCart />
             },
             {
-                path: '/myinventory',
-                element: <MyInventory />
+                path: '/mystorage',
+                element: <MyStorage />
             }
         ]
     }

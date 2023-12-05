@@ -128,7 +128,7 @@ function MyCart() {
         //I didn't delete one by one after each DELETE fetch.
         setMyCart([]);
     }
-    console.log("Updating myCart");
+    // console.log("Updating myCart");
 
     let subTotal = 0, itemCountTotal = 0;
     const displayMyCart = myCart.map(item => {

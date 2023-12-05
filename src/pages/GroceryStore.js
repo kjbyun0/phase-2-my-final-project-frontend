@@ -63,7 +63,7 @@ function GroceryStore() {
         );
     });
 
-    console.log('displayGrocery', displayGrocery);
+    // console.log('displayGrocery', displayGrocery);
 
     return (
         <>
