@@ -10,12 +10,12 @@ function GroceryStore() {
         .then(data => setGrocery(data));
     }, []);
 
-    function addToMyList(e,item) {
-        fetch(`http://localhost:3000/myList/${item.id}`)
+    function handleAddTo(item, to) {
+        fetch(`http://localhost:3000/${to}/${item.id}`)
         .then(resp => resp.json())
         .then(data => {
             if (Object.keys(data).length === 0) {
-                fetch(`http://localhost:3000/myList/`, {
+                fetch(`http://localhost:3000/${to}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -26,10 +26,10 @@ function GroceryStore() {
                     })
                 })
                 .then(resp => resp.json())
-                .then(data => console.log('POST to myList: ', data));
+                .then(data => console.log(`POST to ${to}: `, data));
             }
             else {
-                fetch(`http://localhost:3000/myList/${item.id}`, {
+                fetch(`http://localhost:3000/${to}/${item.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ function GroceryStore() {
                     })
                 })
                 .then(resp => resp.json())
-                .then(data => console.log('PATCH to myList: ', data));
+                .then(data => console.log(`PATCH to ${to}: `, data));
             }
         });
     }
@@ -56,8 +56,8 @@ function GroceryStore() {
                     </Card.Description>
                 </Card.Content>
                 {/* <Card.Content extra> */}
-                    <Button color='red'>Add to cart</Button>
-                    <Button basic color='black' onClick={(e) => addToMyList(e, item)}>Add to list</Button>
+                    <Button color='red' onClick={() => handleAddTo(item, 'myCart')}>Add to cart</Button>
+                    <Button basic color='black' onClick={() => handleAddTo(item, 'myList')}>Add to list</Button>
                 {/* </Card.Content> */}
             </Card>
         );

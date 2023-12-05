@@ -44,7 +44,19 @@ function MyList() {
             }
         })
         .then(resp => resp.json())
-        .then(data => setMyList(myList.filter(listItem => listItem.id !== item.id)));
+        // .then(data => setMyList(myList.filter(listItem => listItem.id !== item.id)));
+        .then(data => {
+            const newMyList = [];
+            const newCheckedState = [];
+            myList.forEach((listItem, i) => {
+                if (listItem.id !== item.id) {
+                    newMyList.push(listItem);
+                    newCheckedState.push(checkedState[i]);
+                }
+            });
+            setMyList(newMyList);
+            setCheckedState(newCheckedState);
+        });
     }
 
     function handleMinusClick(item) {
