@@ -83,10 +83,85 @@ function MyList() {
         ));
     }
 
-    function handleCountChange(e, index) {
-        // need to change its implementation --- fetch
+    // When changing a item count, I need to erase and enter a new count. 
+    // So, I decided to update the count only to its useState.
+    // And I will update it in json-server when input element is out of focus(onBlur event)
+    // Perhaps, it is a good idea to apply this to other buttons, too. It will reduce number of fetch calls.
+    function handleCountChange(e, item, index) {
+        setMyList(myList.map(listItem => 
+            listItem.id === item.id ? {...listItem, count: e.target.value} : listItem));
     }
-    console.log('myList: ', myList);
+    // console.log('myList: ', myList);
+
+    function handleCountBlur(e, item) {
+        // console.log('handleCountBlur');
+        fetch(`http://localhost:3000/myList/${item.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                count: e.target.value === '' ? 1 : parseInt(e.target.value)
+            })
+        })
+        .then(resp => resp.json())
+        .then(data => setMyList(
+            myList.map(item => item.id === data.id ? data : item)
+        ));
+    }
+
+    async function handleAddToCardClick() {
+        // const [myList, setMyList] = useState([]);
+        // const [checkedState, setCheckedState] = useState([]);
+
+        for (let i = 0; i < checkedState.length; i++) {
+            if (checkedState[i]) {
+                // console.log('Start fetch - GET: ', i);
+                await fetch(`http://localhost:3000/myCart/${myList[i].id}`)
+                .then(resp => resp.json())
+                .then(async data => {
+                    // console.log('End fetch - GET: ', i);
+                    if (Object.keys(data).length === 0) {
+                        // console.log('Start fetch - POST: ', i);
+                        await fetch('http://localhost:3000/myCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(myList[i])
+                        })
+                        .then(resp => resp.json())
+                        .then(data => {
+                            // console.log('End fetch - POST: ', i);
+                            console.log('Adding a new item: ', data);
+                        });
+                    } 
+                    else {
+                        // console.log('Start fetch - PATCH: ', i);
+                        await fetch(`http://localhost:3000/myCart/${myList[i].id}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ...myList[i],
+                                count: data.count + myList[i].count
+                            })
+                        })
+                        .then(resp => resp.json())
+                        .then(data => {
+                            // console.log('End fetch - PATCH: ', i);
+                            console.log('Editing an existing item: ', data)
+                        });
+                    }
+                })
+            }
+        }
+
+        // console.log('initializing checkState');
+        setCheckedState(new Array(checkedState.length).fill(false));
+        setIsAllChecked(false);
+    }
 
     const displayMyList = myList.map((item, index) => {
         return (
@@ -102,7 +177,9 @@ function MyList() {
                             <Button icon onClick={() => handleDeleteClick(item)}><Icon name='trash alternate'/></Button> : 
                             <Button icon onClick={() => handleMinusClick(item)}><Icon name='minus'/></Button>
                     }
-                    <Input type='text' value={item.count} onChange={(e) => handleCountChange(e, index)}
+                    <Input type='text' value={item.count} 
+                        onChange={(e) => handleCountChange(e, item, index)} 
+                        onBlur={(e) => handleCountBlur(e, item)} 
                         style={{width: '60px', textAlign: 'center', marginRight: '3px'}}/>
                     <Button icon onClick={(e) => handlePlusClick(item)}><Icon name='plus'/></Button>
                 </div>
@@ -118,7 +195,8 @@ function MyList() {
             <Checkbox style={{marginLeft: '30px', marginRight: '10px'}} 
                 checked={isAllChecked} 
                 onChange={handleAllCheckboxChange} />
-            <Button color={isAnyTrue ? 'red' : 'grey'} disabled={!isAnyTrue}>Add to cart</Button>
+            <Button color={isAnyTrue ? 'red' : 'grey'} disabled={!isAnyTrue} 
+                onClick={handleAddToCardClick}>Add to cart</Button>
             <Divider fitted />
             <List divided verticalAlign='middle'>
                 {displayMyList}
