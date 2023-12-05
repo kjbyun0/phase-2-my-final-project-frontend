@@ -44,9 +44,7 @@ function MyList() {
             }
         })
         .then(resp => resp.json())
-        .then(data => setMyList(
-            myList.filter(listItem => listItem.id !== item.id)
-        ));
+        .then(data => setMyList(myList.filter(listItem => listItem.id !== item.id)));
     }
 
     function handleMinusClick(item) {
@@ -62,7 +60,7 @@ function MyList() {
         })
         .then(resp => resp.json())
         .then(data => setMyList(
-            myList.map(item => item.id === data.id ? data : item)
+            myList.map(listitem => listitem.id === data.id ? data : listitem)
         ));
     }
     
@@ -79,7 +77,7 @@ function MyList() {
         })
         .then(resp => resp.json())
         .then(data => setMyList(
-            myList.map(item => item.id === data.id ? data : item)
+            myList.map(listitem => listitem.id === data.id ? data : listitem)
         ));
     }
 
@@ -87,7 +85,7 @@ function MyList() {
     // So, I decided to update the count only to its useState.
     // And I will update it in json-server when input element is out of focus(onBlur event)
     // Perhaps, it is a good idea to apply this to other buttons, too. It will reduce number of fetch calls.
-    function handleCountChange(e, item, index) {
+    function handleCountChange(e, item) {
         setMyList(myList.map(listItem => 
             listItem.id === item.id ? {...listItem, count: e.target.value} : listItem));
     }
@@ -106,7 +104,7 @@ function MyList() {
         })
         .then(resp => resp.json())
         .then(data => setMyList(
-            myList.map(item => item.id === data.id ? data : item)
+            myList.map(listitem => listitem.id === data.id ? data : listitem)
         ));
     }
 
@@ -133,7 +131,7 @@ function MyList() {
                         .then(resp => resp.json())
                         .then(data => {
                             // console.log('End fetch - POST: ', i);
-                            console.log('Adding a new item: ', data);
+                            console.log('Added a new item: ', data);
                         });
                     } 
                     else {
@@ -151,7 +149,7 @@ function MyList() {
                         .then(resp => resp.json())
                         .then(data => {
                             // console.log('End fetch - PATCH: ', i);
-                            console.log('Editing an existing item: ', data)
+                            console.log('Edited an existing item: ', data)
                         });
                     }
                 })
@@ -166,22 +164,22 @@ function MyList() {
     const displayMyList = myList.map((item, index) => {
         return (
             <List.Item key={item.id} style={{display: 'flex', alignItems: 'center'}}>
-                <Checkbox style={{flex: 0.05, marginLeft: '30px', marginRight: '10px'}} 
+                <Checkbox style={{flex: 0.01, marginLeft: '30px', marginRight: '10px'}} 
                     checked={checkedState[index]} 
                     onChange={() => handleItemCheckboxChange(index)} />
-                <Image style={{flex: 0.15, marginRight: '40px'}} size='mini' src={item.thumbnail} />
-                <h3 style={{flex: 1}} >{`${item.name}, ${item.productUnit}`}</h3>
+                <Image style={{flex: 0.15, marginRight: '40px'}} size='small' src={item.thumbnail} />
+                <h3 style={{flex: 1}}>{`${item.name}, ${item.productUnit}`}</h3>
                 <div style={{flex: 0.5}}>
                     {
                         item.count === 1 ? 
-                            <Button icon onClick={() => handleDeleteClick(item)}><Icon name='trash alternate'/></Button> : 
-                            <Button icon onClick={() => handleMinusClick(item)}><Icon name='minus'/></Button>
+                            <Button icon='trash alternate' onClick={() => handleDeleteClick(item)} /> : 
+                            <Button icon='minus' onClick={() => handleMinusClick(item)} />
                     }
                     <Input type='text' value={item.count} 
-                        onChange={(e) => handleCountChange(e, item, index)} 
+                        onChange={(e) => handleCountChange(e, item)} 
                         onBlur={(e) => handleCountBlur(e, item)} 
                         style={{width: '60px', textAlign: 'center', marginRight: '3px'}}/>
-                    <Button icon onClick={(e) => handlePlusClick(item)}><Icon name='plus'/></Button>
+                    <Button icon='plus' onClick={(e) => handlePlusClick(item)} />
                 </div>
             </List.Item>
         );
