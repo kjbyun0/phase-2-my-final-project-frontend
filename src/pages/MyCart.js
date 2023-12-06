@@ -172,7 +172,7 @@ function MyCart() {
             <h1>MyCart!!</h1>
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
-                    <h1>OrderSummary</h1>
+                    <h1>Order Summary</h1>
                     <h2>{`Subtotal (${itemCountTotal} items): $${Math.floor(subTotal * 100) / 100}`}</h2>
                 </div>
                 <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} color='red' size='massive' 
