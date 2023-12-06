@@ -55,10 +55,8 @@ function GroceryStore() {
                         {`${item.name}, ${item.productUnit}`}
                     </Card.Description>
                 </Card.Content>
-                {/* <Card.Content extra> */}
-                    <Button color='red' onClick={() => handleAddTo(item, 'myCart')}>Add to cart</Button>
-                    <Button basic color='black' onClick={() => handleAddTo(item, 'myList')}>Add to list</Button>
-                {/* </Card.Content> */}
+                <Button color='red' onClick={() => handleAddTo(item, 'myCart')}>Add to cart</Button>
+                <Button basic color='black' onClick={() => handleAddTo(item, 'myList')}>Add to list</Button>
             </Card>
         );
     });

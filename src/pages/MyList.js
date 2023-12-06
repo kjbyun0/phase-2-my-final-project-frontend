@@ -206,7 +206,9 @@ function MyList() {
                 checked={isAllChecked} 
                 onChange={handleAllCheckboxChange} />
             <Button color={isAnyTrue ? 'red' : 'grey'} disabled={!isAnyTrue} 
-                onClick={handleAddToCardClick}>Add to cart</Button>
+                onClick={handleAddToCardClick}>
+                <Icon name='shopping cart' />Add to cart
+            </Button>
             <Divider fitted />
             <List divided verticalAlign='middle'>
                 {displayMyList}

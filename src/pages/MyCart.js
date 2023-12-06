@@ -87,7 +87,11 @@ function MyCart() {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(myCart[i])
+                        body: JSON.stringify({
+                            ...myCart[i],
+                            isStaple: false,
+                            optCount: 0
+                        })
                     })
                     .then(resp => resp.json())
                     .then(data => console.log('Added a new item: ', data));
@@ -128,7 +132,6 @@ function MyCart() {
         //I didn't delete one by one after each DELETE fetch.
         setMyCart([]);
     }
-    // console.log("Updating myCart");
 
     let subTotal = 0, itemCountTotal = 0;
     const displayMyCart = myCart.map(item => {
@@ -173,8 +176,7 @@ function MyCart() {
                     <h2>{`Subtotal (${itemCountTotal} items): $${Math.floor(subTotal * 100) / 100}`}</h2>
                 </div>
                 <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} color='red' size='massive' 
-                    onClick={() => handleOrderClick()}>
-                    <Icon name='shopping cart' />Place Order
+                    onClick={() => handleOrderClick()}>Place order
                 </Button>
             </Segment>
             <List divided verticalAlign='middle'>
