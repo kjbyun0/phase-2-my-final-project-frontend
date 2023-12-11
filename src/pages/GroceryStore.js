@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Image, Button, Segment, Dropdown, Input } from 'semantic-ui-react';
 
 function GroceryStore() {
@@ -112,7 +113,9 @@ function GroceryStore() {
     const displayGrocery = searchGroceryByName.map((item, i) => {
         return (
             <Card key={item.id}>
-                <Image src={item.thumbnail} wrapped ui={false} />
+                <Link to={`/item/${item.id}`}>
+                    <Image src={item.thumbnail} wrapped ui={false} />
+                </Link>
                 <Card.Content>
                     <Card.Header>{`$${item.productPrice} each`}</Card.Header>
                     <Card.Meta>{`($${item.unitPrice} / ${item.unit})`}</Card.Meta>
