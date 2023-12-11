@@ -29,7 +29,24 @@ function MyStorage() {
 
     myStorage.forEach(stoItem => myStorageByCat[catToIndex[stoItem.category]].push(stoItem));
     // console.log('myStorage: ', myStorage);
-    // console.log('myStorageByCat: ', myStorageByCat);
+    // console.log('myStorageByCat: ',
+    
+    function handleCurQuantityChange(e, item) {
+        fetch(`http://localhost:3000/myStorage/${item.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...item,
+                quantity: e.target.value === '' ? 0 : parseInt(e.target.value)
+            })
+        })
+        .then(resp => resp.json())
+        .then(data => setMyStorage(
+            myStorage.map(stoItem => stoItem.id === data.id ? data : stoItem)
+        ));
+    }
 
     function handleStapleCheck(item) {
         fetch(`http://localhost:3000/myStorage/${item.id}`, {
@@ -43,9 +60,9 @@ function MyStorage() {
             })
         })
         .then(resp => resp.json())
-        .then(data => {
-            setMyStorage(myStorage.map(stoItem => stoItem.id === data.id ? data : stoItem));
-        })
+        .then(data => setMyStorage(
+            myStorage.map(stoItem => stoItem.id === data.id ? data : stoItem)
+        ));
     }
 
     function handleOptQuantityChange(e, item) {
@@ -170,6 +187,9 @@ function MyStorage() {
 
     let lackSubTotal = 0, lackQuantityTotal = 0;
     const displayMyStorageByCat = myStorageByCat.map((stoItemsByCat, i) => {
+        if (stoItemsByCat.length === 0)
+            return '';
+
         return (
             <div key={indexToCat[i]}>
                 <h1>{indexToPrintableCat[i]}</h1>
@@ -191,12 +211,14 @@ function MyStorage() {
                                         {`${stoItem.name}, ${stoItem.productUnit}`}
                                     </Card.Header>
                                     <Card.Description>{`$${stoItem.productPrice} each`}</Card.Description>
-                                    {/* <div>
-                                        <label htmlFor='curCnt'>
+                                    <div style={{display: 'flex', alignItems: 'center'}}>
+                                        <label htmlFor='curQty'
+                                            style={{flex: 1, fontSize: 'medium', fontWeight: 'bolder', color: 'teal'}}>
                                             Quantity: 
                                         </label>
-                                        <Input type='number' id='curCnt'
-                                    </div> */}
+                                        <Input type='number' id='curQty' style={{flex: 0.6, width: '30%'}} 
+                                            value={stoItem.quantity} onChange={(e) => handleCurQuantityChange(e, stoItem)} />
+                                    </div>
                                 </Card.Content>
                                 <Card.Content>
                                     <Checkbox toggle label='Staple Item' checked={stoItem.isStaple} 
@@ -208,9 +230,9 @@ function MyStorage() {
                                                     {flex: 1, fontSize: 'small', color: 'lightgray'}}>
                                             Optimal Quantity: 
                                         </label>
-                                        <Input type='number' id='optQty' style={{flex: 1, width: '30%'}} 
+                                        <Input type='number' id='optQty' style={{flex: 0.6, width: '30%'}} 
                                             disabled={!stoItem.isStaple}
-                                            value={stoItem.optQuantity} onChange={(e) => handleOptQuantityChange(e, stoItem)}/>
+                                            value={stoItem.optQuantity} onChange={(e) => handleOptQuantityChange(e, stoItem)} />
                                     </div>
                                     <Button color='red' style={{width: '100%', marginTop: '5px'}} 
                                         disabled={!stoItem.isStaple || stoItem.optQuantity - stoItem.quantity <= 0}
