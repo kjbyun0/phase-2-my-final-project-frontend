@@ -22,7 +22,7 @@ function GroceryStore() {
                     },
                     body: JSON.stringify({
                         ...item,
-                        count: 1
+                        quantity: 1
                     })
                 })
                 .then(resp => resp.json())
@@ -35,7 +35,7 @@ function GroceryStore() {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        count: data.count + 1
+                        quantity: data.quantity + 1
                     })
                 })
                 .then(resp => resp.json())

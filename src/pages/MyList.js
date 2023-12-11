@@ -67,7 +67,7 @@ function MyList() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                count: item.count - 1
+                quantity: item.quantity - 1
             })
         })
         .then(resp => resp.json())
@@ -84,7 +84,7 @@ function MyList() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                count: item.count + 1
+                quantity: item.quantity + 1
             })
         })
         .then(resp => resp.json())
@@ -93,25 +93,25 @@ function MyList() {
         ));
     }
 
-    // When changing a item count, I need to erase and enter a new count. 
-    // So, I decided to update the count only to its useState.
+    // When changing a item quantity, I need to erase and enter a new quantity. 
+    // So, I decided to update the quantity only to its useState.
     // And I will update it in json-server when input element is out of focus(onBlur event)
     // Perhaps, it is a good idea to apply this to other buttons, too. It will reduce number of fetch calls.
-    function handleCountChange(e, item) {
+    function handleQuantityChange(e, item) {
         setMyList(myList.map(listItem => 
-            listItem.id === item.id ? {...listItem, count: e.target.value} : listItem));
+            listItem.id === item.id ? {...listItem, quantity: e.target.value} : listItem));
     }
     // console.log('myList: ', myList);
 
-    function handleCountBlur(e, item) {
-        // console.log('handleCountBlur');
+    function handleQuantityBlur(e, item) {
+        // console.log('handleQuantityBlur');
         fetch(`http://localhost:3000/myList/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                count: e.target.value === '' ? 1 : parseInt(e.target.value)
+                quantity: e.target.value === '' ? 1 : parseInt(e.target.value)
             })
         })
         .then(resp => resp.json())
@@ -155,7 +155,7 @@ function MyList() {
                             },
                             body: JSON.stringify({
                                 ...myList[i],
-                                count: data.count + myList[i].count
+                                quantity: data.quantity + myList[i].quantity
                             })
                         })
                         .then(resp => resp.json())
@@ -183,13 +183,13 @@ function MyList() {
                 <h3 style={{flex: 1}}>{`${item.name}, ${item.productUnit}`}</h3>
                 <div style={{flex: 0.5}}>
                     {
-                        item.count === 1 ? 
+                        item.quantity === 1 ? 
                             <Button icon='trash alternate' onClick={() => handleDeleteClick(item)} /> : 
                             <Button icon='minus' onClick={() => handleMinusClick(item)} />
                     }
-                    <Input type='text' value={item.count} 
-                        onChange={(e) => handleCountChange(e, item)} 
-                        onBlur={(e) => handleCountBlur(e, item)} 
+                    <Input type='text' value={item.quantity} 
+                        onChange={(e) => handleQuantityChange(e, item)} 
+                        onBlur={(e) => handleQuantityBlur(e, item)} 
                         style={{width: '60px', textAlign: 'center', marginRight: '3px'}}/>
                     <Button icon='plus' onClick={(e) => handlePlusClick(item)} />
                 </div>

@@ -48,7 +48,7 @@ function MyStorage() {
         })
     }
 
-    function handleOptCountChange(e, item) {
+    function handleOptQuantityChange(e, item) {
         if (e.target.value < 0) 
             return;
 
@@ -59,7 +59,7 @@ function MyStorage() {
             },
             body: JSON.stringify({
                 ...item,
-                optCount: e.target.value === '' ? '' : parseInt(e.target.value)
+                optQuantity: e.target.value === '' ? '' : parseInt(e.target.value)
             })
         })
         .then(resp => resp.json())
@@ -74,9 +74,9 @@ function MyStorage() {
         .then(itemInCart => {
             if (Object.keys(itemInCart).length === 0) {
                 const itemCopy = {...item};
-                itemCopy.count = item.optCount - item.count;
+                itemCopy.quantity = item.optQuantity - item.quantity;
                 delete itemCopy.isStaple;
-                delete itemCopy.optCount;
+                delete itemCopy.optQuantity;
                 fetch('http://localhost:3000/myCart', {
                     method: 'POST',
                     headers: {
@@ -88,7 +88,7 @@ function MyStorage() {
                 .then(data => console.log('Added to myCart', data));
             }
             else {
-                if (itemInCart.count < item.optCount - item.count) {
+                if (itemInCart.quantity < item.optQuantity - item.quantity) {
                     fetch(`http://localhost:3000/myCart/${item.id}`, {
                         method: 'PATCH',
                         headers: {
@@ -96,14 +96,14 @@ function MyStorage() {
                         },
                         body: JSON.stringify({
                             ...itemInCart,
-                            count: item.optCount - item.count
+                            quantity: item.optQuantity - item.quantity
                         })
                     })
                     .then(resp => resp.json())
                     .then(data => console.log('Edited item in myCart', data));
                 }
                 else {
-                    alert(`This item with more than or equal to ${item.optCount - item.count} / each is already in the cart`);
+                    alert(`This item with more than or equal to ${item.optQuantity - item.quantity} / each is already in the cart`);
                 }
             }
         })
@@ -112,7 +112,7 @@ function MyStorage() {
     async function handleAddToCartClick() {
         //bkj - do this from now on....
         for (const stoItem of myStorage) {
-            const lackInQuantity = stoItem.optCount - stoItem.count;
+            const lackInQuantity = stoItem.optQuantity - stoItem.quantity;
             if (stoItem.isStaple && lackInQuantity > 0) {
                 await fetch(`http://localhost:3000/myCart/${stoItem.id}`)
                 .then(resp => resp.json())
@@ -135,14 +135,14 @@ function MyStorage() {
                                 unit: stoItem.unit,
                                 unitPrice: stoItem.unitPrice,
                                 description: stoItem.description,
-                                count: lackInQuantity
+                                quantity: lackInQuantity
                             })
                         })
                         .then(resp => resp.json())
                         .then(data => console.log('Added a new item to myCart: ', data));
                     }
                     else {
-                        if (lackInQuantity > data.count) {
+                        if (lackInQuantity > data.quantity) {
                             await fetch(`http://localhost:3000/myCart/${stoItem.id}`, {
                                 method: 'PATCH',
                                 headers: {
@@ -150,14 +150,14 @@ function MyStorage() {
                                 },
                                 body: JSON.stringify({
                                     ...data,
-                                    count: data.count >= lackInQuantity ? data.count : lackInQuantity
+                                    quantity: lackInQuantity
                                 })
                             })
                             .then(resp => resp.json())
                             .then(data => console.log('Edited an existing item in myCart: ', data));
                         }
                         else {
-                            console.log('Item count in myCart is already bigger than insufficient quantitiy.');
+                            console.log('Item quantity in myCart is already bigger than insufficient quantitiy.');
                         }
                     }
                 });
@@ -176,7 +176,7 @@ function MyStorage() {
                 <Card.Group itemsPerRow={4}>
                 {
                     stoItemsByCat.map(stoItem => {
-                        const lackInQuantity = (stoItem.isStaple && stoItem.optCount - stoItem.count > 0 ? stoItem.optCount - stoItem.count : 0)
+                        const lackInQuantity = (stoItem.isStaple && stoItem.optQuantity - stoItem.quantity > 0 ? stoItem.optQuantity - stoItem.quantity : 0)
                         lackQuantityTotal += lackInQuantity;
                         lackSubTotal += (stoItem.productPrice * lackInQuantity);
 
@@ -184,34 +184,39 @@ function MyStorage() {
                             <Card key={stoItem.id}>
                                 <Image src={stoItem.thumbnail} wrapped ui={false} />
                                 <Card.Content>
-                                    <Card.Header style={{fontSize: 'medium', color: 'blue'}}>
-                                        {`Current Quantity: ${stoItem.count}`}
-                                    </Card.Header>
+                                    {/* <Card.Header style={{fontSize: 'medium', color: 'blue'}}>
+                                        {`Current Quantity: ${stoItem.quantity}`}
+                                    </Card.Header> */}
                                     <Card.Header style={{fontSize: 'medium'}}>
                                         {`${stoItem.name}, ${stoItem.productUnit}`}
                                     </Card.Header>
                                     <Card.Description>{`$${stoItem.productPrice} each`}</Card.Description>
-                                    {/* <Card.Meta>{`($${stoItem.unitPrice} / ${stoItem.unit})`}</Card.Meta> */}
+                                    {/* <div>
+                                        <label htmlFor='curCnt'>
+                                            Quantity: 
+                                        </label>
+                                        <Input type='number' id='curCnt'
+                                    </div> */}
                                 </Card.Content>
                                 <Card.Content>
                                     <Checkbox toggle label='Staple Item' checked={stoItem.isStaple} 
                                         onChange={() => handleStapleCheck(stoItem)} />
                                     <div style={{display: 'flex', alignItems: 'center'}}>
-                                        <label htmlFor='optCnt' 
+                                        <label htmlFor='optQty' 
                                             style={stoItem.isStaple ? 
                                                     {flex: 1, fontSize: 'small'} : 
                                                     {flex: 1, fontSize: 'small', color: 'lightgray'}}>
-                                            Optimal Count: 
+                                            Optimal Quantity: 
                                         </label>
-                                        <Input type='number' id='optCnt' style={{flex: 1, width: '30%'}} 
+                                        <Input type='number' id='optQty' style={{flex: 1, width: '30%'}} 
                                             disabled={!stoItem.isStaple}
-                                            value={stoItem.optCount} onChange={(e) => handleOptCountChange(e, stoItem)}/>
+                                            value={stoItem.optQuantity} onChange={(e) => handleOptQuantityChange(e, stoItem)}/>
                                     </div>
                                     <Button color='red' style={{width: '100%', marginTop: '5px'}} 
-                                        disabled={!stoItem.isStaple || stoItem.optCount - stoItem.count <= 0}
+                                        disabled={!stoItem.isStaple || stoItem.optQuantity - stoItem.quantity <= 0}
                                         onClick={() => handleItemAddToCartClick(stoItem)}>
                                         <Icon name='shopping cart' />
-                                        {stoItem.isStaple && stoItem.optCount - stoItem.count > 0 ? `Add ${lackInQuantity} / each to cart` : ''}
+                                        {stoItem.isStaple && stoItem.optQuantity - stoItem.quantity > 0 ? `Add ${lackInQuantity} / each to cart` : ''}
                                     </Button>
                                 </Card.Content>
                             </Card>
