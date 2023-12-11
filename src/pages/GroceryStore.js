@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, Image, Button } from 'semantic-ui-react';
+import { Card, Image, Button, Header } from 'semantic-ui-react';
 
 function GroceryStore() {
     const [grocery, setGrocery] = useState([]);
@@ -65,7 +65,7 @@ function GroceryStore() {
 
     return (
         <>
-            <h1>GroceryStore!!</h1>
+            <Header as='h1' block>Grocery</Header>
             <Card.Group itemsPerRow={5}>
                 {displayGrocery}
             </Card.Group>

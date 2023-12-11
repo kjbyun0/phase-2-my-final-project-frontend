@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { List, Image, Button, Icon, Input, Checkbox, Divider } from 'semantic-ui-react';
+import { List, Image, Button, Icon, Input, Checkbox, Divider, Header } from 'semantic-ui-react';
 
 function MyList() {
     const [myList, setMyList] = useState([]);
@@ -197,15 +197,15 @@ function MyList() {
         );
     });
 
-    const isAnyTrue = checkedState.reduce((res, state) => res ||= state, false);
+    const isAnyChecked = checkedState.reduce((res, state) => res ||= state, false);
 
     return (
         <>
-            <h1>MyList!!</h1>
+            <Header as='h1' block>List of favorite items</Header>
             <Checkbox style={{marginLeft: '30px', marginRight: '10px'}} 
                 checked={isAllChecked} 
                 onChange={handleAllCheckboxChange} />
-            <Button color={isAnyTrue ? 'red' : 'grey'} disabled={!isAnyTrue} 
+            <Button color='red' disabled={!isAnyChecked} 
                 onClick={handleAddToCardClick}>
                 <Icon name='shopping cart' />Add to cart
             </Button>

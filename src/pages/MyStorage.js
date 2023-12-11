@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment } from 'semantic-ui-react';
+import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment, Header } from 'semantic-ui-react';
 
 const indexToCat = ['vegetables', 'fruits', 'meatSeafood', 'dairyEggs', 'pentry', 'beverages'];
 const indexToPrintableCat = ['Vegetables', 'Fruits', 'Meat & Seafood', 'Dairy & Eggs', 'Pentry', 'Beverages'];
@@ -32,6 +32,9 @@ function MyStorage() {
     // console.log('myStorageByCat: ',
     
     function handleCurQuantityChange(e, item) {
+        if (e.target.value < 0) 
+            return;
+
         fetch(`http://localhost:3000/myStorage/${item.id}`, {
             method: 'PATCH',
             headers: {
@@ -253,7 +256,7 @@ function MyStorage() {
 
     return (
         <>
-            <h1>MyStorage!!</h1>
+            <Header as='h1' block>Storage at home</Header>
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
                     <h1>Add to cart to fulfill optimal quantities?</h1>

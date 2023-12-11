@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { List, Button, Image, Input, Segment, Icon } from 'semantic-ui-react';
+import { List, Button, Image, Input, Segment, Header } from 'semantic-ui-react';
 
 function MyCart() {
     const [myCart, setMyCart] = useState([]);
@@ -169,13 +169,14 @@ function MyCart() {
 
     return (
         <>
-            <h1>MyCart!!</h1>
+            <Header as='h1' block>Items in cart</Header>
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
                     <h1>Order Summary</h1>
                     <h2>{`Subtotal (${itemQuantityTotal} items): $${Math.floor(subTotal * 100) / 100}`}</h2>
                 </div>
-                <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} color='red' size='massive' 
+                <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} 
+                    disabled={myCart.length === 0} color='red' size='massive' 
                     onClick={() => handleOrderClick()}>Place order
                 </Button>
             </Segment>
