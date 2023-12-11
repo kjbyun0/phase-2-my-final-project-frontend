@@ -49,6 +49,9 @@ function MyStorage() {
     }
 
     function handleOptCountChange(e, item) {
+        if (e.target.value < 0) 
+            return;
+
         fetch(`http://localhost:3000/myStorage/${item.id}`, {
             method: 'PATCH',
             headers: {
@@ -56,7 +59,7 @@ function MyStorage() {
             },
             body: JSON.stringify({
                 ...item,
-                optCount: parseInt(e.target.value)
+                optCount: e.target.value === '' ? '' : parseInt(e.target.value)
             })
         })
         .then(resp => resp.json())
@@ -106,8 +109,63 @@ function MyStorage() {
         })
     }
 
-    function handleAddToCartClick() {
+    async function handleAddToCartClick() {
         //bkj - do this from now on....
+        for (const stoItem of myStorage) {
+            const lackInQuantity = stoItem.optCount - stoItem.count;
+            if (stoItem.isStaple && lackInQuantity > 0) {
+                await fetch(`http://localhost:3000/myCart/${stoItem.id}`)
+                .then(resp => resp.json())
+                .then(async data => {
+                    if (Object.keys(data).length === 0) {
+                        await fetch('http://localhost:3000/myCart/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            // bkj - use reduce later....
+                            body: JSON.stringify({
+                                id: stoItem.id,
+                                category: stoItem.category,
+                                thumbnail: stoItem.thumbnail,
+                                image: stoItem.image,
+                                name: stoItem.name,
+                                productUnit: stoItem.productUnit,
+                                productPrice: stoItem.productPrice,
+                                unit: stoItem.unit,
+                                unitPrice: stoItem.unitPrice,
+                                description: stoItem.description,
+                                count: lackInQuantity
+                            })
+                        })
+                        .then(resp => resp.json())
+                        .then(data => console.log('Added a new item to myCart: ', data));
+                    }
+                    else {
+                        if (lackInQuantity > data.count) {
+                            await fetch(`http://localhost:3000/myCart/${stoItem.id}`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    ...data,
+                                    count: data.count >= lackInQuantity ? data.count : lackInQuantity
+                                })
+                            })
+                            .then(resp => resp.json())
+                            .then(data => console.log('Edited an existing item in myCart: ', data));
+                        }
+                        else {
+                            console.log('Item count in myCart is already bigger than insufficient quantitiy.');
+                        }
+                    }
+                });
+            }
+            else {
+                console.log(`Nothing done for id: ${stoItem.id}`);
+            }
+        }
     }
 
     let lackSubTotal = 0, lackQuantityTotal = 0;
@@ -115,12 +173,12 @@ function MyStorage() {
         return (
             <div key={indexToCat[i]}>
                 <h1>{indexToPrintableCat[i]}</h1>
-                <Card.Group itemsPerRow={5}>
+                <Card.Group itemsPerRow={4}>
                 {
                     stoItemsByCat.map(stoItem => {
-                        const lackinQuantity = (stoItem.isStaple && stoItem.optCount - stoItem.count > 0 ? stoItem.optCount - stoItem.count : 0)
-                        lackQuantityTotal += lackinQuantity;
-                        lackSubTotal += (stoItem.productPrice * lackinQuantity);
+                        const lackInQuantity = (stoItem.isStaple && stoItem.optCount - stoItem.count > 0 ? stoItem.optCount - stoItem.count : 0)
+                        lackQuantityTotal += lackInQuantity;
+                        lackSubTotal += (stoItem.productPrice * lackInQuantity);
 
                         return (
                             <Card key={stoItem.id}>
@@ -145,7 +203,7 @@ function MyStorage() {
                                                     {flex: 1, fontSize: 'small', color: 'lightgray'}}>
                                             Optimal Count: 
                                         </label>
-                                        <Input type='text' id='optCnt' style={{flex: 1, width: '30%'}} 
+                                        <Input type='number' id='optCnt' style={{flex: 1, width: '30%'}} 
                                             disabled={!stoItem.isStaple}
                                             value={stoItem.optCount} onChange={(e) => handleOptCountChange(e, stoItem)}/>
                                     </div>
@@ -153,7 +211,7 @@ function MyStorage() {
                                         disabled={!stoItem.isStaple || stoItem.optCount - stoItem.count <= 0}
                                         onClick={() => handleItemAddToCartClick(stoItem)}>
                                         <Icon name='shopping cart' />
-                                        {stoItem.isStaple && stoItem.optCount - stoItem.count > 0 ? `Add ${lackinQuantity} / each to cart` : ''}
+                                        {stoItem.isStaple && stoItem.optCount - stoItem.count > 0 ? `Add ${lackInQuantity} / each to cart` : ''}
                                     </Button>
                                 </Card.Content>
                             </Card>

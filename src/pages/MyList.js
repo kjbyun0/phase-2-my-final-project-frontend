@@ -143,7 +143,7 @@ function MyList() {
                         .then(resp => resp.json())
                         .then(data => {
                             // console.log('End fetch - POST: ', i);
-                            console.log('Added a new item: ', data);
+                            console.log('Added a new item to myCart: ', data);
                         });
                     } 
                     else {
@@ -161,7 +161,7 @@ function MyList() {
                         .then(resp => resp.json())
                         .then(data => {
                             // console.log('End fetch - PATCH: ', i);
-                            console.log('Edited an existing item: ', data)
+                            console.log('Edited an existing item in myCart: ', data)
                         });
                     }
                 })

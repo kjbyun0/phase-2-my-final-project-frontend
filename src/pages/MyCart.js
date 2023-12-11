@@ -94,7 +94,7 @@ function MyCart() {
                         })
                     })
                     .then(resp => resp.json())
-                    .then(data => console.log('Added a new item: ', data));
+                    .then(data => console.log('Added a new item to myStorage: ', data));
                 }
                 else {
                     await fetch(`http://localhost:3000/myStorage/${myCart[i].id}`, {
@@ -108,7 +108,7 @@ function MyCart() {
                         })
                     })
                     .then(resp => resp.json())
-                    .then(data => console.log('Edited an existing item: ', data))
+                    .then(data => console.log('Edited an existing item in myStorage: ', data))
                 }
             });
         }
