@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { List, Image, Button, Icon, Input, Checkbox, Divider, Header } from 'semantic-ui-react';
+import { List, Image, Button, Icon, Input, Checkbox, Divider, Segment } from 'semantic-ui-react';
 
 function MyList() {
     const [myList, setMyList] = useState([]);
@@ -201,7 +201,9 @@ function MyList() {
 
     return (
         <>
-            <Header as='h1' block>List of favorite items</Header>
+            <Segment inverted color='orange'>
+                <h1>List of favorite items</h1>
+            </Segment>
             <Checkbox style={{marginLeft: '30px', marginRight: '10px'}} 
                 checked={isAllChecked} 
                 onChange={handleAllCheckboxChange} />

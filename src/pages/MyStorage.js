@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment, Header } from 'semantic-ui-react';
+import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment } from 'semantic-ui-react';
 
 const indexToCat = ['vegetables', 'fruits', 'meatSeafood', 'dairyEggs', 'pentry', 'beverages'];
 const indexToPrintableCat = ['Vegetables', 'Fruits', 'Meat & Seafood', 'Dairy & Eggs', 'Pentry', 'Beverages'];
@@ -256,7 +256,9 @@ function MyStorage() {
 
     return (
         <>
-            <Header as='h1' block>Storage at home</Header>
+            <Segment inverted color='teal'>
+                <h1>Storage at home</h1>
+            </Segment>
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
                     <h1>Add to cart to fulfill optimal quantities?</h1>

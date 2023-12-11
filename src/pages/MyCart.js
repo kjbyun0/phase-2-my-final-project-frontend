@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { List, Button, Image, Input, Segment, Header } from 'semantic-ui-react';
+import { List, Button, Image, Input, Segment } from 'semantic-ui-react';
 
 function MyCart() {
     const [myCart, setMyCart] = useState([]);
@@ -169,7 +169,9 @@ function MyCart() {
 
     return (
         <>
-            <Header as='h1' block>Items in cart</Header>
+            <Segment inverted color='yellow'>
+                <h1>Items in cart</h1>
+            </Segment>
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
                     <h1>Order Summary</h1>
