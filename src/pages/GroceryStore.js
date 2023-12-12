@@ -4,11 +4,11 @@ import { Card, Image, Button, Segment, Dropdown, Input } from 'semantic-ui-react
 
 function GroceryStore() {
     const {grocery, myCart, setMyCart} = useOutletContext();
-    console.log(
-        'grocery: ', grocery, 
-        'myCart: ', myCart,
-        'setMyCart: ', setMyCart
-    );
+    // console.log(
+    //     'grocery: ', grocery, 
+    //     'myCart: ', myCart,
+    //     'setMyCart: ', setMyCart
+    // );
     const idToIndexMyCart = {};
     myCart.forEach((item, i) => idToIndexMyCart[item.id] = i);
 
@@ -86,7 +86,7 @@ function GroceryStore() {
         return (
             <Card key={item.id}>
                 <Link to={`/item/${item.id}`}>
-                    <Image src={item.thumbnail} wrapped ui={false} />
+                    <Image className='img' src={item.thumbnail} />
                 </Link>
                 <Card.Content>
                     <Card.Header>{`$${item.productPrice} each`}</Card.Header>

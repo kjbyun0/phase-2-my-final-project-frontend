@@ -208,7 +208,7 @@ function MyStorage() {
             return (
                 <div key={indexToCat[i]}>
                     <h1>{indexToPrintableCat[i]}</h1>
-                    <Card.Group itemsPerRow={4}>
+                    <Card.Group itemsPerRow={5}>
                     {
                         stoItemsByCat.map(stoItem => {
                             const lackInQuantity = (stoItem.isStaple && stoItem.optQuantity - stoItem.quantity > 0 ? stoItem.optQuantity - stoItem.quantity : 0)
@@ -217,7 +217,7 @@ function MyStorage() {
 
                             return (
                                 <Card key={stoItem.id}>
-                                    <Image src={grocery[idToIndexGrocery[stoItem.id]].thumbnail} wrapped ui={false} />
+                                    <Image className='img' src={grocery[idToIndexGrocery[stoItem.id]].thumbnail}  />
                                     <Card.Content>
                                         <Card.Header style={{fontSize: 'medium'}}>
                                             {`${grocery[idToIndexGrocery[stoItem.id]].name}, ${grocery[idToIndexGrocery[stoItem.id]].productUnit}`}

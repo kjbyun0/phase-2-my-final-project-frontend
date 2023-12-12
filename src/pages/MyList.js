@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, Link } from 'react-router-dom';
 import { List, Image, Button, Icon, Input, Checkbox, Divider, Segment } from 'semantic-ui-react';
 
 function MyList() {
@@ -191,9 +191,11 @@ function MyList() {
                         onChange={() => handleItemCheckboxChange(index)} />
                     <Image style={{flex: 0.15, marginRight: '40px'}} size='small' 
                         src={grocery[idToIndexGrocery[item.id]].thumbnail} />
-                    <h3 style={{flex: 1}}>
-                        {`${grocery[idToIndexGrocery[item.id]].name}, ${grocery[idToIndexGrocery[item.id]].productUnit}`}
-                    </h3>
+                    <Link to={`/item/${item.id}`} style={{flex: 1, color: 'black'}}>
+                        <h3>
+                            {`${grocery[idToIndexGrocery[item.id]].name}, ${grocery[idToIndexGrocery[item.id]].productUnit}`}
+                        </h3>
+                    </Link>
                     <div style={{flex: 0.5}}>
                         {
                             item.quantity === 1 ? 

@@ -1,4 +1,4 @@
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, Link } from 'react-router-dom';
 import { List, Button, Image, Input, Segment } from 'semantic-ui-react';
 
 function MyCart() {
@@ -140,7 +140,9 @@ function MyCart() {
                     onClick={() => handleDeleteClick(item)} />
                 <Image style={{flex: 0.15, marginRight: '40px'}} size='small' 
                     src={grocery[idToIndexGrocery[item.id]].thumbnail} />
-                <h3 style={{flex: 1}}>{`${grocery[idToIndexGrocery[item.id]].name}, ${grocery[idToIndexGrocery[item.id]].productUnit}`}</h3>
+                <Link to={`/item/${item.id}`} style={{flex: 1, color: 'black'}}>
+                    <h3>{`${grocery[idToIndexGrocery[item.id]].name}, ${grocery[idToIndexGrocery[item.id]].productUnit}`}</h3>
+                </Link>
                 <div style={{flex: 0.5}}>
                     {
                         item.quantity === 1 ? 
