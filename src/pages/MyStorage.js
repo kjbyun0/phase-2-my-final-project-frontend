@@ -157,6 +157,10 @@ function MyStorage() {
     }
 
     async function handleAllAddToCartClick() {
+        // myCartTemp is the up-to-date copy of myCart as any items in myCart are added or updated.
+        // It is to call setMyCart at once after all items are added to myCart.
+        const myCartTemp = [...myCart];
+
         for (const stoItem of myStorage) {
             const lackInQuantity = stoItem.optQuantity - stoItem.quantity;
             if (stoItem.isStaple && lackInQuantity > 0) {
@@ -177,7 +181,7 @@ function MyStorage() {
                         .then(resp => resp.json())
                         .then(data => {
                             console.log('Added a new item to myCart: ', data);
-                            setMyCart(myCart => [...myCart, data]);
+                            myCartTemp.push(data);
                         });
                     }
                     else {
@@ -195,7 +199,11 @@ function MyStorage() {
                             .then(resp => resp.json())
                             .then(data => {
                                 console.log('Edited an existing item in myCart: ', data);
-                                setMyCart(myCart => myCart.map(item => item.id === data.id ? data : item));
+                                myCartTemp.forEach((item, i) => {
+                                    if (item.id === data.id) {
+                                        myCartTemp[i] = data;
+                                    }
+                                })
                             });
                         }
                         else {
@@ -208,7 +216,9 @@ function MyStorage() {
                 console.log(`Nothing done for id: ${stoItem.id}`);
             }
         }
+        setMyCart(myCartTemp);
     }
+    console.log('In MyStorage, screen update*********');
 
     let lackSubTotal = 0, lackQuantityTotal = 0;
     const displayMyStorageByCat = 

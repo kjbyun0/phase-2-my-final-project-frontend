@@ -129,6 +129,10 @@ function MyList() {
     }
 
     async function handleAllAddToCartClick() {
+        // myCartTemp is the up-to-date copy of myCart as any items in myCart are added or updated.
+        // It is to call setMyCart at once after all items are added to myCart.
+        const myCartTemp = [...myCart];
+
         for (let i = 0; i < checkedState.length; i++) {
             if (checkedState[i]) {
                 // console.log('Start fetch - GET: ', i);
@@ -149,7 +153,7 @@ function MyList() {
                         .then(data => {
                             // console.log('End fetch - POST: ', i);
                             console.log('Added a new item to myCart: ', data);
-                            setMyCart(myCart => [...myCart, data]);
+                            myCartTemp.push(data);
                         });
                     } 
                     else {
@@ -168,12 +172,18 @@ function MyList() {
                         .then(data => {
                             // console.log('End fetch - PATCH: ', i);
                             console.log('Edited an existing item in myCart: ', data);
-                            setMyCart(myCart => myCart.map(item => item.id === data.id ? data : item));
+                            myCartTemp.forEach((item, i) => {
+                                if (item.id === data.id) {
+                                    myCartTemp[i] = data;
+                                }
+                            });
                         });
                     }
                 })
             }
         }
+
+        setMyCart(myCartTemp);
 
         // console.log('initializing checkState');
         setCheckedState(checkedState => new Array(checkedState.length).fill(false));
