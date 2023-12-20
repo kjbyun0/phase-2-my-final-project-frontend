@@ -60,6 +60,19 @@ function MyStorage() {
         ));
     }
 
+    function handleDeleteItemClick(stoItem) {
+        fetch(`http://localhost:3000/myStorage/${stoItem.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'applicatioin/json'
+            }
+        })
+        .then(resp => resp.json())
+        .then(data => setMyStorage(
+            myStorage.filter(item => item.id !== stoItem.id)
+        ));
+    }
+
     function handleStapleCheck(item) {
         fetch(`http://localhost:3000/myStorage/${item.id}`, {
             method: 'PATCH',
@@ -230,6 +243,12 @@ function MyStorage() {
                                             </label>
                                             <Input type='number' id='curQty' style={{flex: 0.6, width: '30%'}} 
                                                 value={stoItem.quantity} onChange={(e) => handleCurQuantityChange(e, stoItem)} />
+                                            {
+                                                !stoItem.isStaple && stoItem.quantity === 0 ? 
+                                                <Button circular icon='trash alternate outline' style={{flex: 0.15, width: '10%', marginLeft: '5px'}}
+                                                    onClick={() => handleDeleteItemClick(stoItem)} /> : 
+                                                ''
+                                            }
                                         </div>
                                     </Card.Content>
                                     <Card.Content>
