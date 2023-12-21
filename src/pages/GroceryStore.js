@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { Card, Image, Button, Segment, Dropdown, Input } from 'semantic-ui-react';
+import { handleAddTo } from './commonLib';
 
 function GroceryStore() {
     const {grocery, myCart, setMyCart} = useOutletContext();
@@ -35,50 +36,6 @@ function GroceryStore() {
         setSearchName(event.target.value);
     }
 
-    function handleAddTo(item, to) {
-        fetch(`http://localhost:3000/${to}/${item.id}`)
-        .then(resp => resp.json())
-        .then(data => {
-            if (Object.keys(data).length === 0) {
-                fetch(`http://localhost:3000/${to}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: item.id,
-                        quantity: 1
-                    })
-                })
-                .then(resp => resp.json())
-                .then(data => {
-                    if (to === 'myCart') {
-                        setMyCart(myCart => [...myCart, data]);
-                    }
-                    console.log(`POST to ${to}: `, data);
-                });
-            }
-            else {
-                fetch(`http://localhost:3000/${to}/${item.id}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        quantity: data.quantity + 1
-                    })
-                })
-                .then(resp => resp.json())
-                .then(data => {
-                    if (to === 'myCart') {
-                        setMyCart(myCart.map(cartItem => cartItem.id === data.id ? data : cartItem));
-                    }
-                    console.log(`PATCH to ${to}: `, data);
-                });
-            }
-        });
-    }
-
     const filterGroceryByCat = grocery.filter(item => displayByCat === 'all' || displayByCat === item.category);
     const searchGroceryByName = filterGroceryByCat.filter(item => item.name.toLowerCase().includes(searchName.toLowerCase()));
 
@@ -95,10 +52,10 @@ function GroceryStore() {
                         {`${item.name}, ${item.productUnit}`}
                     </Card.Description>
                 </Card.Content>
-                <Button color='red' onClick={() => handleAddTo(item, 'myCart')}>
+                <Button color='red' onClick={() => handleAddTo(item, 'myCart', myCart, setMyCart)}>
                     {idToIndexMyCart[item.id] === undefined ? 'Add to cart' : `${myCart[idToIndexMyCart[item.id]].quantity} in cart`}
                 </Button>
-                <Button basic color='black' onClick={() => handleAddTo(item, 'myList')}>Add to list</Button>
+                <Button basic color='black' onClick={() => handleAddTo(item, 'myList', myCart, setMyCart)}>Add to list</Button>
             </Card>
         );
     });
@@ -112,7 +69,7 @@ function GroceryStore() {
                     <h4>
                         Display By:{' '}
                         <Dropdown inline options={catOptions} 
-                            defaultValue={catOptions[0].value} onChange={handleCatChange} /> 
+                            value={displayByCat} onChange={handleCatChange} /> 
                     </h4>
                     <Input action={{ icon: 'search'}} placeholder='Search...' 
                         value={searchName} onChange={handleSearchChange} />

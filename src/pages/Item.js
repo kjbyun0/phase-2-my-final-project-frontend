@@ -1,5 +1,6 @@
 import { useOutletContext, useParams } from 'react-router-dom';
 import { Image, Header, Label, Button } from 'semantic-ui-react';
+import { handleAddTo } from './commonLib';
 
 function Item() {
     const {grocery, idToIndexGrocery, myCart, setMyCart} = useOutletContext();
@@ -13,50 +14,6 @@ function Item() {
     const params = useParams();
     // console.log('params: ', params);
     const id = parseInt(params.id);
-
-    function handleAddTo(item, to) {
-        fetch(`http://localhost:3000/${to}/${item.id}`)
-        .then(resp => resp.json())
-        .then(data => {
-            if (Object.keys(data).length === 0) {
-                fetch(`http://localhost:3000/${to}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: item.id,
-                        quantity: 1
-                    })
-                })
-                .then(resp => resp.json())
-                .then(data => {
-                    if (to === 'myCart') {
-                        setMyCart(myCart => [...myCart, data]);
-                    }
-                    console.log(`POST to ${to}: `, data);
-                });
-            }
-            else {
-                fetch(`http://localhost:3000/${to}/${item.id}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        quantity: data.quantity + 1
-                    })
-                })
-                .then(resp => resp.json())
-                .then(data => {
-                    if (to === 'myCart') {
-                        setMyCart(myCart.map(cartItem => cartItem.id === data.id ? data : cartItem));
-                    }
-                    console.log(`PATCH to ${to}: `, data);
-                });
-            }
-        });
-    }
 
     if (grocery.length === 0)
         return ('');
@@ -79,11 +36,11 @@ function Item() {
                     <Header as='h2'>{`$${groceryItem.productPrice} / Each`}</Header>
                     <p>{`($${groceryItem.unitPrice} / ${groceryItem.unit})`}</p>
                     <Button color='red' style={{width: '80%', marginBottom: '10px'}}
-                        onClick={() => handleAddTo(groceryItem, 'myCart')}>
+                        onClick={() => handleAddTo(groceryItem, 'myCart', myCart, setMyCart)}>
                         {myCartItem === undefined ? 'Add to cart' : `${myCartItem.quantity} in cart`}
                     </Button>
                     <Button basic color='black' style={{width: '80%'}} 
-                        onClick={() => handleAddTo(groceryItem, 'myList')}>
+                        onClick={() => handleAddTo(groceryItem, 'myList', myCart, setMyCart)}>
                         Add to list
                     </Button>
                 </div>

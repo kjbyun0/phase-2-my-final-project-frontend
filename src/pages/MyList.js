@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { List, Image, Button, Icon, Input, Checkbox, Divider, Segment } from 'semantic-ui-react';
+import { postItemSync, patchItemSync } from './commonLib';
 
 function MyList() {
     const {grocery, idToIndexGrocery, myCart, setMyCart} = useOutletContext();
@@ -142,53 +143,26 @@ function MyList() {
                     // console.log('End fetch - GET: ', i);
                     if (Object.keys(data).length === 0) {
                         // console.log('Start fetch - POST: ', i);
-                        await fetch('http://localhost:3000/myCart', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(myList[i])
-                        })
-                        .then(resp => resp.json())
-                        .then(data => {
-                            // console.log('End fetch - POST: ', i);
-                            console.log('Added a new item to myCart: ', data);
-                            myCartTemp.push(data);
-                        });
+                        await postItemSync('myCart', myList[i], myCartTemp);
                     } 
                     else {
                         // console.log('Start fetch - PATCH: ', i);
-                        await fetch(`http://localhost:3000/myCart/${myList[i].id}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                ...myList[i],
+                        await patchItemSync(myList[i], 'myCart', 
+                            {
                                 quantity: data.quantity + myList[i].quantity
-                            })
-                        })
-                        .then(resp => resp.json())
-                        .then(data => {
-                            // console.log('End fetch - PATCH: ', i);
-                            console.log('Edited an existing item in myCart: ', data);
-                            myCartTemp.forEach((item, i) => {
-                                if (item.id === data.id) {
-                                    myCartTemp[i] = data;
-                                }
-                            });
-                        });
+                            }, 
+                            myCartTemp);
                     }
                 })
             }
         }
-
         setMyCart(myCartTemp);
 
         // console.log('initializing checkState');
         setCheckedState(checkedState => new Array(checkedState.length).fill(false));
         setIsAllChecked(isAllChecked => false);
     }
+    // console.log('In MyList, screen update*********');
 
     const displayMyList = 
         grocery.length === 0 ? 

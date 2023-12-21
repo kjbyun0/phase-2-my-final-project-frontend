@@ -1,5 +1,6 @@
 import { useOutletContext, Link } from 'react-router-dom';
 import { List, Button, Image, Input, Segment } from 'semantic-ui-react';
+import { postItemSync, patchItemSync } from './commonLib';
 
 function MyCart() {
     const {grocery, idToIndexGrocery, myCart, setMyCart} = useOutletContext();
@@ -70,39 +71,24 @@ function MyCart() {
         .then(data => setMyCart(myCart => myCart.map(cartItem => cartItem.id === data.id ? data : cartItem)));
     }
 
-    async function handleOrderClick() {
+    async function handlePlaceOrderClick() {
         for (let i = 0; i < myCart.length; i++) {
             await fetch(`http://localhost:3000/myStorage/${myCart[i].id}`)
             .then(resp => resp.json())
             .then(async data => {
                 if (Object.keys(data).length === 0) {
-                    await fetch('http://localhost:3000/myStorage', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
+                    await postItemSync('myStorage', 
+                        {
                             ...myCart[i],
                             isStaple: false,
                             optQuantity: 0
-                        })
-                    })
-                    .then(resp => resp.json())
-                    .then(data => console.log('Added a new item to myStorage: ', data));
+                        });
                 }
                 else {
-                    await fetch(`http://localhost:3000/myStorage/${myCart[i].id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            ...myCart[i],
+                    await patchItemSync(myCart[i], 'myStorage',
+                        {
                             quantity: data.quantity + myCart[i].quantity
-                        })
-                    })
-                    .then(resp => resp.json())
-                    .then(data => console.log('Edited an existing item in myStorage: ', data))
+                        });
                 }
             });
         }
@@ -177,7 +163,7 @@ function MyCart() {
                 </div>
                 <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} 
                     disabled={myCart.length === 0} color='red' size='massive' 
-                    onClick={() => handleOrderClick()}>Place order
+                    onClick={() => handlePlaceOrderClick()}>Place order
                 </Button>
             </Segment>
             <List divided verticalAlign='middle'>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment, ItemMeta } from 'semantic-ui-react';
+import { postItem, postItemSync, patchItem, patchItemSync } from './commonLib';
 
 const indexToCat = ['vegetables', 'fruits', 'meatSeafood', 'dairyEggs', 'pentry', 'beverages'];
 const indexToPrintableCat = ['Vegetables', 'Fruits', 'Meat & Seafood', 'Dairy & Eggs', 'Pentry', 'Beverages'];
@@ -113,41 +114,22 @@ function MyStorage() {
     function handleItemAddToCartClick(item) {
         fetch(`http://localhost:3000/myCart/${item.id}`)
         .then(resp => resp.json())
-        .then(itemInCart => {
-            if (Object.keys(itemInCart).length === 0) {
-                fetch('http://localhost:3000/myCart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
+        .then(data => {
+            if (Object.keys(data).length === 0) {
+                postItem('myCart', 
+                    {
                         id: item.id,
                         quantity: item.optQuantity - item.quantity
-                    })
-                })
-                .then(resp => resp.json())
-                .then(data => {
-                    console.log('Added to myCart', data);
-                    setMyCart(myCart => [...myCart, data]);
-                });
+                    }, 
+                    myCart, setMyCart);
             }
             else {
-                if (itemInCart.quantity < item.optQuantity - item.quantity) {
-                    fetch(`http://localhost:3000/myCart/${item.id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            ...itemInCart,
+                if (data.quantity < item.optQuantity - item.quantity) {
+                    patchItem(item, 'myCart', 
+                        {
                             quantity: item.optQuantity - item.quantity
-                        })
-                    })
-                    .then(resp => resp.json())
-                    .then(data => {
-                        console.log('Edited item in myCart', data);
-                        setMyCart(myCart => myCart.map(item => item.id === data.id ? data : item));
-                    });
+                        }, 
+                        myCart, setMyCart);
                 }
                 else {
                     alert(`This item with more than or equal to ${item.optQuantity - item.quantity} / each is already in the cart`);
@@ -168,43 +150,20 @@ function MyStorage() {
                 .then(resp => resp.json())
                 .then(async data => {
                     if (Object.keys(data).length === 0) {
-                        await fetch('http://localhost:3000/myCart/', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
+                        await postItemSync('myCart', 
+                            {
                                 id: stoItem.id,
                                 quantity: lackInQuantity
-                            })
-                        })
-                        .then(resp => resp.json())
-                        .then(data => {
-                            console.log('Added a new item to myCart: ', data);
-                            myCartTemp.push(data);
-                        });
+                            }, 
+                            myCartTemp);
                     }
                     else {
                         if (lackInQuantity > data.quantity) {
-                            await fetch(`http://localhost:3000/myCart/${stoItem.id}`, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    ...data,
+                            await patchItemSync(stoItem, 'myCart', 
+                                {
                                     quantity: lackInQuantity
-                                })
-                            })
-                            .then(resp => resp.json())
-                            .then(data => {
-                                console.log('Edited an existing item in myCart: ', data);
-                                myCartTemp.forEach((item, i) => {
-                                    if (item.id === data.id) {
-                                        myCartTemp[i] = data;
-                                    }
-                                })
-                            });
+                                }, 
+                                myCartTemp);
                         }
                         else {
                             console.log('Item quantity in myCart is already bigger than insufficient quantitiy.');
@@ -218,7 +177,7 @@ function MyStorage() {
         }
         setMyCart(myCartTemp);
     }
-    console.log('In MyStorage, screen update*********');
+    // console.log('In MyStorage, screen update*********');
 
     let lackSubTotal = 0, lackQuantityTotal = 0;
     const displayMyStorageByCat = 
