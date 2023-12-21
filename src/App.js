@@ -29,7 +29,7 @@ function App() {
   // console.log("outside useEffect, idToIndexGrocery: ", idToIndexGrocery);
 
   return (
-    <>
+    <div style={{marginLeft: '1%', marginRight: '1%'}}>
       <header>
         <NavBar />
       </header>
@@ -40,7 +40,7 @@ function App() {
         myCart: myCart,
         setMyCart: setMyCart
       }}/>
-    </>
+    </div>
   );
 }
 
