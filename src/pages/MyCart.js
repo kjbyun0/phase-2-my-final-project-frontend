@@ -113,10 +113,13 @@ function MyCart() {
         setMyCart(myCart => []);
     }
 
+    const usDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
     let subTotal = 0, itemQuantityTotal = 0;
     const displayMyCart = myCart.map(item => {
-        const itemTotal = 
-            Math.floor(grocery[idToIndexGrocery[item.id]].productPrice * item.quantity * 100) / 100;
+        const itemTotal = grocery[idToIndexGrocery[item.id]].productPrice * item.quantity;
         subTotal += itemTotal;
         itemQuantityTotal += item.quantity;
         return (
@@ -142,9 +145,9 @@ function MyCart() {
                     <Button icon='plus' onClick={() => handlePlusClick(item)}/>
                 </div>
                 <div style={{flex: 0.25}}>
-                    <h2>{`$${itemTotal}`}</h2>
+                    <h2>{usDollar.format(itemTotal)}</h2>
                     {
-                        item.quantity > 1 ? <p>{`${grocery[idToIndexGrocery[item.id]].productPrice} / each`}</p> : ''
+                        item.quantity > 1 ? <p>{`${usDollar.format(grocery[idToIndexGrocery[item.id]].productPrice)} / each`}</p> : ''
                     }
                 </div>
             </List.Item>
@@ -159,7 +162,7 @@ function MyCart() {
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
                     <h1>Order Summary</h1>
-                    <h2>{`Subtotal (${itemQuantityTotal} items): $${Math.floor(subTotal * 100) / 100}`}</h2>
+                    <h2>{`Subtotal (${itemQuantityTotal} items): ${usDollar.format(subTotal)}`}</h2>
                 </div>
                 <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} 
                     disabled={myCart.length === 0} color='red' size='massive' 

@@ -92,7 +92,7 @@ function MyStorage() {
     }
 
     function handleOptQuantityChange(e, item) {
-        if (e.target.value < 0) 
+        if (e.target.value <= 0) 
             return;
 
         fetch(`http://localhost:3000/myStorage/${item.id}`, {
@@ -179,6 +179,10 @@ function MyStorage() {
     }
     // console.log('In MyStorage, screen update*********');
 
+    const usDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
     let lackSubTotal = 0, lackQuantityTotal = 0;
     const displayMyStorageByCat = 
         grocery.length === 0 ?
@@ -204,7 +208,7 @@ function MyStorage() {
                                         <Card.Header style={{fontSize: 'medium'}}>
                                             {`${grocery[idToIndexGrocery[stoItem.id]].name}, ${grocery[idToIndexGrocery[stoItem.id]].productUnit}`}
                                         </Card.Header>
-                                        <Card.Description>{`$${grocery[idToIndexGrocery[stoItem.id]].productPrice} each`}</Card.Description>
+                                        <Card.Description>{`${usDollar.format(grocery[idToIndexGrocery[stoItem.id]].productPrice)} each`}</Card.Description>
                                         <div style={{display: 'flex', alignItems: 'center'}}>
                                             <label htmlFor='curQty'
                                                 style={{flex: 1, fontSize: 'medium', fontWeight: 'bolder', color: 'teal'}}>
@@ -259,7 +263,7 @@ function MyStorage() {
             <Segment raised style={{display: 'flex'}}>
                 <div style={{flex: 1, marginLeft: '80px'}}>
                     <h1>Add to cart to fulfill optimal quantities?</h1>
-                    <h2>{`Subtotal (${lackQuantityTotal} items): $${Math.floor(lackSubTotal * 100) / 100}`}</h2>
+                    <h2>{`Subtotal (${lackQuantityTotal} items): ${usDollar.format(lackSubTotal)}`}</h2>
                 </div>
                 <Button style={{flex: 0.3, marginTop: '15px', marginBottom: '15px', marginRight: '80px'}} 
                     disabled={lackQuantityTotal === 0}color='red' size='massive' onClick={() => handleAllAddToCartClick()} >

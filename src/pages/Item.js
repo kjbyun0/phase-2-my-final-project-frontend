@@ -22,6 +22,11 @@ function Item() {
     // console.log('myCartItem: ' , myCartItem);
     const groceryItem = grocery[idToIndexGrocery[id]];
 
+    const usDollar = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
+
     return (
         <>
             <div style={{display: 'flex', marginTop: '100px'}}>
@@ -33,8 +38,8 @@ function Item() {
                 <div style={{flex: 0.8, marginRight: '10vw'}}>
                     <Header as='h1'>{groceryItem.name}</Header>
                     <Label circular color='grey' size='big'>{groceryItem.productUnit}</Label>
-                    <Header as='h2'>{`$${groceryItem.productPrice} / Each`}</Header>
-                    <p>{`($${groceryItem.unitPrice} / ${groceryItem.unit})`}</p>
+                    <Header as='h2'>{`${usDollar.format(groceryItem.productPrice)} / Each`}</Header>
+                    <p>{`(${usDollar.format(groceryItem.unitPrice)} / ${groceryItem.unit})`}</p>
                     <Button color='red' style={{width: '80%', marginBottom: '10px'}}
                         onClick={() => handleAddTo(groceryItem, 'myCart', myCart, setMyCart)}>
                         {myCartItem === undefined ? 'Add to cart' : `${myCartItem.quantity} in cart`}

@@ -40,14 +40,19 @@ function GroceryStore() {
     const searchGroceryByName = filterGroceryByCat.filter(item => item.name.toLowerCase().includes(searchName.toLowerCase()));
 
     const displayGrocery = searchGroceryByName.map((item) => {
+        const usDollar = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+
         return (
             <Card key={item.id}>
                 <Link to={`/item/${item.id}`}>
                     <Image className='img' src={item.thumbnail} />
                 </Link>
                 <Card.Content>
-                    <Card.Header>{`$${item.productPrice} each`}</Card.Header>
-                    <Card.Meta>{`($${item.unitPrice} / ${item.unit})`}</Card.Meta>
+                    <Card.Header>{`${usDollar.format(item.productPrice)} each`}</Card.Header>
+                    <Card.Meta>{`(${usDollar.format(item.unitPrice)} / ${item.unit})`}</Card.Meta>
                     <Card.Description>
                         {`${item.name}, ${item.productUnit}`}
                     </Card.Description>
