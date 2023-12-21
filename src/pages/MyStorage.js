@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment, ItemMeta } from 'semantic-ui-react';
+import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment } from 'semantic-ui-react';
 import { postItem, postItemSync, patchItem, patchItemSync } from './commonLib';
 
 const indexToCat = ['vegetables', 'fruits', 'meatSeafood', 'dairyEggs', 'pentry', 'beverages'];
