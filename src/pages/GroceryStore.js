@@ -9,7 +9,7 @@ function GroceryStore() {
     //     'grocery: ', grocery, 
     //     'myCart: ', myCart,
     //     'setMyCart: ', setMyCart
-    // );
+    // );   
     const idToIndexMyCart = {};
     myCart.forEach((item, i) => idToIndexMyCart[item.id] = i);
 
