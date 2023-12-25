@@ -17,7 +17,8 @@ function MyList() {
     const [isAllChecked, setIsAllChecked] = useState(false);
 
     useEffect(() => {
-        fetch('http://localhost:3000/myList')
+        // fetch('http://localhost:3000/myList')
+        fetch(`${process.env.REACT_APP_API_URL}/myList`)
         .then(resp => resp.json())
         .then(data => {
             setMyList(data);
@@ -46,7 +47,8 @@ function MyList() {
 
     function handleDeleteClick(item) {
         // console.log('handleDeleteClick');
-        fetch(`http://localhost:3000/myList/${item.id}`, {
+        // fetch(`http://localhost:3000/myList/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -70,7 +72,8 @@ function MyList() {
 
     function handleMinusClick(item) {
         // console.log("handleMinusClick");
-        fetch(`http://localhost:3000/myList/${item.id}`, {
+        // fetch(`http://localhost:3000/myList/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -87,7 +90,8 @@ function MyList() {
     
     function handlePlusClick(item) {
         // console.log("handlePlusClick");
-        fetch(`http://localhost:3000/myList/${item.id}`, {
+        // fetch(`http://localhost:3000/myList/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -114,7 +118,8 @@ function MyList() {
 
     function handleQuantityBlur(e, item) {
         // console.log('handleQuantityBlur');
-        fetch(`http://localhost:3000/myList/${item.id}`, {
+        // fetch(`http://localhost:3000/myList/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -137,7 +142,8 @@ function MyList() {
         for (let i = 0; i < checkedState.length; i++) {
             if (checkedState[i]) {
                 // console.log('Start fetch - GET: ', i);
-                await fetch(`http://localhost:3000/myCart/${myList[i].id}`)
+                // await fetch(`http://localhost:3000/myCart/${myList[i].id}`)
+                await fetch(`${process.env.REACT_APP_API_URL}/myCart/${myList[i].id}`)
                 .then(resp => resp.json())
                 .then(async data => {
                     // console.log('End fetch - GET: ', i);

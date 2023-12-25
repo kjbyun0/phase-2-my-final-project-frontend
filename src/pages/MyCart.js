@@ -12,7 +12,8 @@ function MyCart() {
     // );
 
     function handleDeleteClick(item) {
-        fetch(`http://localhost:3000/myCart/${item.id}`, {
+        // fetch(`http://localhost:3000/myCart/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,7 +24,9 @@ function MyCart() {
     }
 
     function handleMinusClick(item) {
-        fetch(`http://localhost:3000/myCart/${item.id}`, {
+        //bkj - I can replace it with patchItem in commonLib
+        // fetch(`http://localhost:3000/myCart/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -38,7 +41,9 @@ function MyCart() {
     }
 
     function handlePlusClick(item) {
-        fetch(`http://localhost:3000/myCart/${item.id}`, {
+        //bkj - I can replace it with patchItem in commonLib
+        // fetch(`http://localhost:3000/myCart/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -57,7 +62,9 @@ function MyCart() {
     }
 
     function handleQuantityBlur(e, item) {
-        fetch(`http://localhost:3000/myCart/${item.id}`, {
+        //bkj - I can replace it with patchItem in commonLib
+        // fetch(`http://localhost:3000/myCart/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -73,7 +80,8 @@ function MyCart() {
 
     async function handlePlaceOrderClick() {
         for (let i = 0; i < myCart.length; i++) {
-            await fetch(`http://localhost:3000/myStorage/${myCart[i].id}`)
+            // await fetch(`http://localhost:3000/myStorage/${myCart[i].id}`)
+            await fetch(`${process.env.REACT_APP_API_URL}/myStorage/${myCart[i].id}`)
             .then(resp => resp.json())
             .then(async data => {
                 if (Object.keys(data).length === 0) {
@@ -94,7 +102,8 @@ function MyCart() {
         }
 
         for (let i = 0; i < myCart.length; i++) {
-            await fetch(`http://localhost:3000/myCart/${myCart[i].id}`, {
+            // await fetch(`http://localhost:3000/myCart/${myCart[i].id}`, {
+            await fetch(`${process.env.REACT_APP_API_URL}/myCart/${myCart[i].id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

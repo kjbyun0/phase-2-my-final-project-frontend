@@ -26,7 +26,8 @@ function MyStorage() {
     const myStorageByCat = indexToCat.map(cat => []);
 
     useEffect(() => {
-        fetch('http://localhost:3000/myStorage')
+        // fetch('http://localhost:3000/myStorage')
+        fetch(`${process.env.REACT_APP_API_URL}/myStorage`)
         .then(resp => resp.json())
         .then(data => {
             // I can't fill myStorageByCat from data here. 
@@ -45,7 +46,9 @@ function MyStorage() {
         if (e.target.value < 0) 
             return;
 
-        fetch(`http://localhost:3000/myStorage/${item.id}`, {
+        // bkj - it can be replaced with patchItem in commonLib
+        // fetch(`http://localhost:3000/myStorage/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,7 +65,8 @@ function MyStorage() {
     }
 
     function handleDeleteItemClick(stoItem) {
-        fetch(`http://localhost:3000/myStorage/${stoItem.id}`, {
+        // fetch(`http://localhost:3000/myStorage/${stoItem.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${stoItem.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'applicatioin/json'
@@ -75,7 +79,8 @@ function MyStorage() {
     }
 
     function handleStapleCheck(item) {
-        fetch(`http://localhost:3000/myStorage/${item.id}`, {
+        // fetch(`http://localhost:3000/myStorage/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -95,7 +100,8 @@ function MyStorage() {
         if (e.target.value <= 0) 
             return;
 
-        fetch(`http://localhost:3000/myStorage/${item.id}`, {
+        // fetch(`http://localhost:3000/myStorage/${item.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${item.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -112,7 +118,8 @@ function MyStorage() {
     }
 
     function handleItemAddToCartClick(item) {
-        fetch(`http://localhost:3000/myCart/${item.id}`)
+        // fetch(`http://localhost:3000/myCart/${item.id}`)
+        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`)
         .then(resp => resp.json())
         .then(data => {
             if (Object.keys(data).length === 0) {
@@ -146,7 +153,8 @@ function MyStorage() {
         for (const stoItem of myStorage) {
             const lackInQuantity = stoItem.optQuantity - stoItem.quantity;
             if (stoItem.isStaple && lackInQuantity > 0) {
-                await fetch(`http://localhost:3000/myCart/${stoItem.id}`)
+                // await fetch(`http://localhost:3000/myCart/${stoItem.id}`)
+                await fetch(`${process.env.REACT_APP_API_URL}/myCart/${stoItem.id}`)
                 .then(resp => resp.json())
                 .then(async data => {
                     if (Object.keys(data).length === 0) {

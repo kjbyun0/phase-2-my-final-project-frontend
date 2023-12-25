@@ -1,6 +1,7 @@
 
 function postItem(to, bodyObj, myState, setMyState) {
-    fetch(`http://localhost:3000/${to}/`, {
+    // fetch(`http://localhost:3000/${to}/`, {
+    fetch(`${process.env.REACT_APP_API_URL}/${to}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -17,7 +18,8 @@ function postItem(to, bodyObj, myState, setMyState) {
 }
 
 async function postItemSync(to, bodyObj, myStateCopy) {
-    await fetch(`http://localhost:3000/${to}/`, {
+    // await fetch(`http://localhost:3000/${to}/`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/${to}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -34,7 +36,8 @@ async function postItemSync(to, bodyObj, myStateCopy) {
 }
 
 function patchItem(item, to, bodyObj, myState, setMyState) {
-    fetch(`http://localhost:3000/${to}/${item.id}`, {
+    // fetch(`http://localhost:3000/${to}/${item.id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
@@ -51,7 +54,8 @@ function patchItem(item, to, bodyObj, myState, setMyState) {
 }
 
 async function patchItemSync(item, to, bodyObj, myStateCopy) {
-    await fetch(`http://localhost:3000/${to}/${item.id}`, {
+    // await fetch(`http://localhost:3000/${to}/${item.id}`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
@@ -71,7 +75,8 @@ async function patchItemSync(item, to, bodyObj, myStateCopy) {
 }
 
 function handleAddTo(item, to, myState, setMyState) {
-    fetch(`http://localhost:3000/${to}/${item.id}`)
+    // fetch(`http://localhost:3000/${to}/${item.id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`)
     .then(resp => resp.json())
     .then(data => {
         if (Object.keys(data).length === 0) {
