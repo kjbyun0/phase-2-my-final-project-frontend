@@ -1,4 +1,4 @@
-import { useOutletContext, Link } from 'react-router-dom';
+import { useOutletContext, Link, useNavigate } from 'react-router-dom';
 import { List, Button, Image, Input, Segment } from 'semantic-ui-react';
 import { postItemSync, patchItemSync } from './commonLib';
 
@@ -10,6 +10,7 @@ function MyCart() {
     //     'myCart: ', myCart,
     //     'setMyCart: ', setMyCart
     // );
+    const navigate = useNavigate();
 
     function handleDeleteClick(item) {
         // fetch(`http://localhost:3000/myCart/${item.id}`, {
@@ -120,6 +121,8 @@ function MyCart() {
         //Initializing myCart after placing order
         //I didn't delete one by one after each DELETE fetch.
         setMyCart(myCart => []);
+
+        navigate(`/mystorage`);
     }
 
     const usDollar = new Intl.NumberFormat('en-US', {

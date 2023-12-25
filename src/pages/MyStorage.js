@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment } from 'semantic-ui-react';
 import { postItem, postItemSync, patchItem, patchItemSync } from './commonLib';
 
@@ -15,6 +15,7 @@ function MyStorage() {
     //     'myCart: ', myCart,
     //     'setMyCart: ', setMyCart
     // );
+    const navigate = useNavigate();
 
     const [myStorage, setMyStorage] = useState([]);
     const catToIndex = {};
@@ -184,6 +185,8 @@ function MyStorage() {
             }
         }
         setMyCart(myCartTemp);
+
+        navigate('/mycart');
     }
     // console.log('In MyStorage, screen update*********');
 
