@@ -11,18 +11,22 @@ function App() {
   const [myCart, setMyCart] = useState([]);
 
   useEffect(() => {
-    const groceryResp = fetch('http://localhost:3000/groceryStore')
-      .then(resp => resp.json());
+    async function initLoadData() {
+      const groceryResp = await fetch('http://localhost:3000/groceryStore')
+        .then(resp => resp.json());
 
-    const myCartResp = fetch('http://localhost:3000/myCart')
-      .then(resp => resp.json());
+      const myCartResp = await fetch('http://localhost:3000/myCart')
+        .then(resp => resp.json());
 
-    Promise.all([groceryResp, myCartResp])
-    .then(data => {
-      // console.log('Result', data);
-      setGrocery(data[0]);
-      setMyCart(data[1]);
-    })
+      Promise.all([groceryResp, myCartResp])
+      .then(data => {
+        // console.log('Result', data);
+        setGrocery(data[0]);
+        setMyCart(data[1]);
+      });
+    }
+
+    initLoadData();
   }, []);
 
   grocery.forEach((item, i) => idToIndexGrocery[item.id] = i);
