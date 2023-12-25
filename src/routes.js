@@ -4,13 +4,13 @@ import MyList from './pages/MyList';
 import MyCart from './pages/MyCart';
 import MyStorage from './pages/MyStorage';
 import Item from './pages/Item';
-// import ErrorPage from './pages/ErrorPage';
+import ErrorPage from './pages/ErrorPage';
 
 const routes = [
     {
         path: '/',
         element: <App />,
-        // errorElement: ,
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/',
