@@ -12,10 +12,10 @@ function App() {
 
   useEffect(() => {
     async function initLoadData() {
-      const groceryResp = await fetch('http://localhost:3000/groceryStore')
+      const groceryResp = await fetch(`${process.env.REACT_APP_API_URL}/groceryStore`)
         .then(resp => resp.json());
 
-      const myCartResp = await fetch('http://localhost:3000/myCart')
+      const myCartResp = await fetch(`${process.env.REACT_APP_API_URL}/myCart`)
         .then(resp => resp.json());
 
       Promise.all([groceryResp, myCartResp])
