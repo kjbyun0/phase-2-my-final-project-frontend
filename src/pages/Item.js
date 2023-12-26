@@ -45,7 +45,7 @@ function Item() {
                         {myCartItem === undefined ? 'Add to cart' : `${myCartItem.quantity} in cart`}
                     </Button>
                     <Button basic color='black' style={{width: '80%'}} 
-                        onClick={() => handleAddTo(groceryItem, 'myList', myCart, setMyCart)}>
+                        onClick={() => handleAddTo(groceryItem, 'myList')}>
                         Add to list
                     </Button>
                 </div>

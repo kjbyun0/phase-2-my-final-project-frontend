@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { Divider, Card, Image, Checkbox, Input, Button, Icon, Segment } from 'semantic-ui-react';
-import { postItem, postItemSync, patchItem, patchItemSync } from './commonLib';
+import { postItem, postItemSync, patchItem, patchItemSync, deleteItem } from './commonLib';
 
 const indexToCat = ['vegetables', 'fruits', 'meatSeafood', 'dairyEggs', 'pentry', 'beverages'];
 const indexToPrintableCat = ['Vegetables', 'Fruits', 'Meat & Seafood', 'Dairy & Eggs', 'Pentry', 'Beverages'];
@@ -27,7 +27,6 @@ function MyStorage() {
     const myStorageByCat = indexToCat.map(cat => []);
 
     useEffect(() => {
-        // fetch('http://localhost:3000/myStorage')
         fetch(`${process.env.REACT_APP_API_URL}/myStorage`)
         .then(resp => resp.json())
         .then(data => {
@@ -41,85 +40,39 @@ function MyStorage() {
     if (grocery.length > 0) {
         myStorage.forEach(stoItem => myStorageByCat[catToIndex[grocery[idToIndexGrocery[stoItem.id]].category]].push(stoItem));
     }
-    // console.log('myStorageByCat: ',
 
     function handleCurQuantityChange(e, item) {
         if (e.target.value < 0) 
             return;
 
-        // bkj - it can be replaced with patchItem in commonLib
-        // fetch(`http://localhost:3000/myStorage/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myStorage', {
                 ...item,
                 quantity: e.target.value === '' ? 0 : parseInt(e.target.value)
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyStorage(myStorage => 
-            myStorage.map(stoItem => stoItem.id === data.id ? data : stoItem)
-        ));
+            }, myStorage, setMyStorage);
     }
 
     function handleDeleteItemClick(stoItem) {
-        // fetch(`http://localhost:3000/myStorage/${stoItem.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${stoItem.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'applicatioin/json'
-            }
-        })
-        .then(resp => resp.json())
-        .then(data => setMyStorage(
-            myStorage.filter(item => item.id !== stoItem.id)
-        ));
+        deleteItem(stoItem, 'myStorage', myStorage, setMyStorage);
     }
 
     function handleStapleCheck(item) {
-        // fetch(`http://localhost:3000/myStorage/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myStorage', {
                 ...item, 
                 isStaple: !item.isStaple
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyStorage(myStorage => 
-            myStorage.map(stoItem => stoItem.id === data.id ? data : stoItem)
-        ));
+            }, myStorage, setMyStorage);
     }
 
     function handleOptQuantityChange(e, item) {
         if (e.target.value <= 0) 
             return;
 
-        // fetch(`http://localhost:3000/myStorage/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myStorage/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myStorage', {
                 ...item,
                 optQuantity: e.target.value === '' ? '' : parseInt(e.target.value)
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyStorage(myStorage => 
-            myStorage.map(stoItem => stoItem.id === data.id ? data : stoItem)
-        ));
+            }, myStorage, setMyStorage);
     }
 
     function handleItemAddToCartClick(item) {
-        // fetch(`http://localhost:3000/myCart/${item.id}`)
         fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`)
         .then(resp => resp.json())
         .then(data => {
@@ -154,7 +107,6 @@ function MyStorage() {
         for (const stoItem of myStorage) {
             const lackInQuantity = stoItem.optQuantity - stoItem.quantity;
             if (stoItem.isStaple && lackInQuantity > 0) {
-                // await fetch(`http://localhost:3000/myCart/${stoItem.id}`)
                 await fetch(`${process.env.REACT_APP_API_URL}/myCart/${stoItem.id}`)
                 .then(resp => resp.json())
                 .then(async data => {
@@ -188,7 +140,6 @@ function MyStorage() {
 
         navigate('/mycart');
     }
-    // console.log('In MyStorage, screen update*********');
 
     const usDollar = new Intl.NumberFormat('en-US', {
         style: 'currency',

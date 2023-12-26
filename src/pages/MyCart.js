@@ -1,6 +1,6 @@
 import { useOutletContext, Link, useNavigate } from 'react-router-dom';
 import { List, Button, Image, Input, Segment } from 'semantic-ui-react';
-import { postItemSync, patchItemSync } from './commonLib';
+import { postItemSync, patchItem, patchItemSync, deleteItem, deleteItemSync } from './commonLib';
 
 function MyCart() {
     const {grocery, idToIndexGrocery, myCart, setMyCart} = useOutletContext();
@@ -13,49 +13,23 @@ function MyCart() {
     const navigate = useNavigate();
 
     function handleDeleteClick(item) {
-        // fetch(`http://localhost:3000/myCart/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(resp => resp.json())
-        .then(data => setMyCart(myCart => myCart.filter(cartItem => cartItem.id !== item.id)));
+        deleteItem(item, 'myCart', myCart, setMyCart);
     }
 
     function handleMinusClick(item) {
-        //bkj - I can replace it with patchItem in commonLib
-        // fetch(`http://localhost:3000/myCart/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myCart', {
                 ...item,
                 quantity: item.quantity - 1
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyCart(myCart => myCart.map(cartItem => cartItem.id === data.id ? data : cartItem)));
+            }, 
+            myCart, setMyCart);
     }
 
     function handlePlusClick(item) {
-        //bkj - I can replace it with patchItem in commonLib
-        // fetch(`http://localhost:3000/myCart/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myCart', {
                 ...item,
                 quantity: item.quantity + 1
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyCart(myCart => myCart.map(cartItem => cartItem.id === data.id ? data : cartItem)));
+            }, 
+            myCart, setMyCart);
     }
 
     function handleQuantityChange(e, item) {
@@ -63,25 +37,15 @@ function MyCart() {
     }
 
     function handleQuantityBlur(e, item) {
-        //bkj - I can replace it with patchItem in commonLib
-        // fetch(`http://localhost:3000/myCart/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myCart/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myCart', {
                 ...item,
                 quantity: e.target.value === '' ? 1 : parseInt(e.target.value)
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyCart(myCart => myCart.map(cartItem => cartItem.id === data.id ? data : cartItem)));
+            }, 
+            myCart, setMyCart);
     }
 
     async function handlePlaceOrderClick() {
         for (let i = 0; i < myCart.length; i++) {
-            // await fetch(`http://localhost:3000/myStorage/${myCart[i].id}`)
             await fetch(`${process.env.REACT_APP_API_URL}/myStorage/${myCart[i].id}`)
             .then(resp => resp.json())
             .then(async data => {
@@ -103,15 +67,7 @@ function MyCart() {
         }
 
         for (let i = 0; i < myCart.length; i++) {
-            // await fetch(`http://localhost:3000/myCart/${myCart[i].id}`, {
-            await fetch(`${process.env.REACT_APP_API_URL}/myCart/${myCart[i].id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(resp => resp.json())
-            .then(data => console.log('Deleted an item from myCart: ', myCart[i]))
+            deleteItemSync(myCart[i], 'myCart')
             .catch(error => {
                 console.error('Error deleting myCart Item: ', myCart[i]);
                 alert('Error deleting myCart Item');
@@ -119,7 +75,7 @@ function MyCart() {
         }
 
         //Initializing myCart after placing order
-        //I didn't delete one by one after each DELETE fetch.
+        //I don't delete one by one after each DELETE fetch.
         setMyCart(myCart => []);
 
         navigate(`/mystorage`);

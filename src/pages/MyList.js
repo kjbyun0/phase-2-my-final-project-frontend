@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { List, Image, Button, Icon, Input, Checkbox, Divider, Segment } from 'semantic-ui-react';
-import { postItemSync, patchItemSync } from './commonLib';
+import { postItemSync, patchItem, patchItemSync } from './commonLib';
 
 function MyList() {
     const {grocery, idToIndexGrocery, myCart, setMyCart} = useOutletContext();
@@ -17,7 +17,6 @@ function MyList() {
     const [isAllChecked, setIsAllChecked] = useState(false);
 
     useEffect(() => {
-        // fetch('http://localhost:3000/myList')
         fetch(`${process.env.REACT_APP_API_URL}/myList`)
         .then(resp => resp.json())
         .then(data => {
@@ -47,7 +46,6 @@ function MyList() {
 
     function handleDeleteClick(item) {
         // console.log('handleDeleteClick');
-        // fetch(`http://localhost:3000/myList/${item.id}`, {
         fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
             method: 'DELETE',
             headers: {
@@ -55,11 +53,9 @@ function MyList() {
             }
         })
         .then(resp => resp.json())
-        // .then(data => setMyList(myList.filter(listItem => listItem.id !== item.id)));
         .then(data => {
             setMyList(myList => myList.filter((listItem) => listItem.id !== item.id));
 
-            // ??????????
             const newCheckedState = [];
             myList.forEach((listItem, i) => {
                 if (listItem.id !== item.id) {
@@ -72,41 +68,19 @@ function MyList() {
 
     function handleMinusClick(item) {
         // console.log("handleMinusClick");
-        // fetch(`http://localhost:3000/myList/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myList', {
                 quantity: item.quantity - 1
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyList(myList => 
-            myList.map(listitem => listitem.id === data.id ? data : listitem)
-        ));
+            }, myList, setMyList);
     }
     
     function handlePlusClick(item) {
         // console.log("handlePlusClick");
-        // fetch(`http://localhost:3000/myList/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myList', {
                 quantity: item.quantity + 1
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyList(myList => 
-            myList.map(listitem => listitem.id === data.id ? data : listitem)
-        ));
+            }, myList, setMyList);
     }
 
-    // When changing a item quantity, I need to erase and enter a new quantity. 
+    // When changing an item's quantity, I need to erase and enter a new quantity. 
     // So, I decided to update the quantity only to its useState.
     // And I will update it in json-server when input element is out of focus(onBlur event)
     function handleQuantityChange(e, item) {
@@ -118,20 +92,9 @@ function MyList() {
 
     function handleQuantityBlur(e, item) {
         // console.log('handleQuantityBlur');
-        // fetch(`http://localhost:3000/myList/${item.id}`, {
-        fetch(`${process.env.REACT_APP_API_URL}/myList/${item.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+        patchItem(item, 'myList', {
                 quantity: e.target.value === '' ? 1 : parseInt(e.target.value)
-            })
-        })
-        .then(resp => resp.json())
-        .then(data => setMyList(myList => 
-            myList.map(listitem => listitem.id === data.id ? data : listitem)
-        ));
+            }, myList, setMyList);
     }
 
     async function handleAllAddToCartClick() {
@@ -142,7 +105,6 @@ function MyList() {
         for (let i = 0; i < checkedState.length; i++) {
             if (checkedState[i]) {
                 // console.log('Start fetch - GET: ', i);
-                // await fetch(`http://localhost:3000/myCart/${myList[i].id}`)
                 await fetch(`${process.env.REACT_APP_API_URL}/myCart/${myList[i].id}`)
                 .then(resp => resp.json())
                 .then(async data => {
@@ -168,7 +130,6 @@ function MyList() {
         setCheckedState(checkedState => new Array(checkedState.length).fill(false));
         setIsAllChecked(isAllChecked => false);
     }
-    // console.log('In MyList, screen update*********');
 
     const displayMyList = 
         grocery.length === 0 ? 

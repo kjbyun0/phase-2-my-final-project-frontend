@@ -60,7 +60,7 @@ function GroceryStore() {
                 <Button color='red' onClick={() => handleAddTo(item, 'myCart', myCart, setMyCart)}>
                     {idToIndexMyCart[item.id] === undefined ? 'Add to cart' : `${myCart[idToIndexMyCart[item.id]].quantity} in cart`}
                 </Button>
-                <Button basic color='black' onClick={() => handleAddTo(item, 'myList', myCart, setMyCart)}>Add to list</Button>
+                <Button basic color='black' onClick={() => handleAddTo(item, 'myList')}>Add to list</Button>
             </Card>
         );
     });

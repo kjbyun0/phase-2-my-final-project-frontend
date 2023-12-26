@@ -1,7 +1,6 @@
 
 function postItem(to, bodyObj, myState, setMyState) {
-    // fetch(`http://localhost:3000/${to}/`, {
-    fetch(`${process.env.REACT_APP_API_URL}/${to}/`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/${to}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -10,7 +9,7 @@ function postItem(to, bodyObj, myState, setMyState) {
     })
     .then(resp => resp.json())
     .then(data => {
-        if (to === 'myCart') {
+        if (myState !== undefined && setMyState !== undefined) {
             setMyState(myState => [...myState, data]);
         }
         console.log(`POST to ${to}: `, data);
@@ -18,8 +17,7 @@ function postItem(to, bodyObj, myState, setMyState) {
 }
 
 async function postItemSync(to, bodyObj, myStateCopy) {
-    // await fetch(`http://localhost:3000/${to}/`, {
-    await fetch(`${process.env.REACT_APP_API_URL}/${to}/`, {
+    return await fetch(`${process.env.REACT_APP_API_URL}/${to}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -28,7 +26,7 @@ async function postItemSync(to, bodyObj, myStateCopy) {
     })
     .then(resp => resp.json())
     .then(data => {
-        if (to === 'myCart') {
+        if (myStateCopy !== undefined) {
             myStateCopy.push(data);
         }
         console.log(`POST to ${to}: `, data);
@@ -36,8 +34,7 @@ async function postItemSync(to, bodyObj, myStateCopy) {
 }
 
 function patchItem(item, to, bodyObj, myState, setMyState) {
-    // fetch(`http://localhost:3000/${to}/${item.id}`, {
-    fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`, {
+    return fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
@@ -46,7 +43,7 @@ function patchItem(item, to, bodyObj, myState, setMyState) {
     })
     .then(resp => resp.json())
     .then(data => {
-        if (to === 'myCart') {
+        if (myState !== undefined && setMyState !== undefined) {
             setMyState(myState.map(sItem => sItem.id === data.id ? data : sItem));
         }
         console.log(`PATCH to ${to}: `, data);
@@ -54,8 +51,7 @@ function patchItem(item, to, bodyObj, myState, setMyState) {
 }
 
 async function patchItemSync(item, to, bodyObj, myStateCopy) {
-    // await fetch(`http://localhost:3000/${to}/${item.id}`, {
-        await fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`, {
+    return await fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
@@ -64,7 +60,7 @@ async function patchItemSync(item, to, bodyObj, myStateCopy) {
     })
     .then(resp => resp.json())
     .then(data => {
-        if (to === 'myCart') {
+        if (myStateCopy !== undefined) {
             myStateCopy.forEach((item, i) => {
                 if (item.id === data.id)
                     myStateCopy[i] = data;
@@ -74,9 +70,35 @@ async function patchItemSync(item, to, bodyObj, myStateCopy) {
     });
 }
 
+function deleteItem(item, from, myState, setMyState) {
+    return fetch(`${process.env.REACT_APP_API_URL}/${from}/${item.id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(resp => resp.json())
+    .then(data => {
+        if (myState !== undefined && setMyState !== undefined) {
+            setMyState(myState => myState.filter(sItem => sItem.id !== item.id));
+        }
+        console.log(`DELETE from ${from}: `, item);
+    });
+}
+
+async function deleteItemSync(item, from) {
+    return await fetch(`${process.env.REACT_APP_API_URL}/${from}/${item.id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(resp => resp.json())
+    .then(data => console.log(`DELETE from ${from}: `,item));
+}
+
 function handleAddTo(item, to, myState, setMyState) {
-    // fetch(`http://localhost:3000/${to}/${item.id}`)
-    fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`)
+    return fetch(`${process.env.REACT_APP_API_URL}/${to}/${item.id}`)
     .then(resp => resp.json())
     .then(data => {
         if (Object.keys(data).length === 0) {
@@ -97,4 +119,4 @@ function handleAddTo(item, to, myState, setMyState) {
     });
 }
 
-export { postItem, postItemSync, patchItem, patchItemSync, handleAddTo };
+export { postItem, postItemSync, patchItem, patchItemSync, deleteItem, deleteItemSync, handleAddTo };
