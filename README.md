@@ -9,10 +9,6 @@ The frontend application is developed using react and semantic ui react, and the
 - Backend: Run json-server --watch db.json from https://github.com/kjbyun0/json-server-template/db
 - Frontend: Run npm start from https://github.com/kjbyun0/phase-2-my-final-project-frontend
 
-or 
-Use the following deployed version
-- Frontend: https://transcendent-gumption-9cb3f3.netlify.app/
-
 ## Demo
 ![](https://github.com/kjbyun0/phase-2-my-final-project-frontend/blob/main/ForREADME.gif)
 
