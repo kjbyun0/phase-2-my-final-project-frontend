@@ -84,9 +84,17 @@ function MyList() {
     // So, I decided to update the quantity only to its useState.
     // And I will update it in json-server when input element is out of focus(onBlur event)
     function handleQuantityChange(e, item) {
-        setMyList(myList => 
-            myList.map(listItem => listItem.id === item.id ? {...listItem, quantity: e.target.value} : listItem)
-        );
+        const intVal = parseInt(e.target.value);
+        if (e.target.value === '' || !isNaN(intVal)) {
+            setMyList(myList => 
+                myList.map(listItem => listItem.id === item.id ? 
+                    {
+                        ...listItem, 
+                        quantity: e.target.value === '' ? '' : intVal
+                    } : 
+                    listItem)
+            );
+        }
     }
     // console.log('myList: ', myList);
 

@@ -18,7 +18,6 @@ function MyCart() {
 
     function handleMinusClick(item) {
         patchItem(item, 'myCart', {
-                ...item,
                 quantity: item.quantity - 1
             }, 
             myCart, setMyCart);
@@ -26,19 +25,27 @@ function MyCart() {
 
     function handlePlusClick(item) {
         patchItem(item, 'myCart', {
-                ...item,
                 quantity: item.quantity + 1
             }, 
             myCart, setMyCart);
     }
 
     function handleQuantityChange(e, item) {
-        setMyCart(myCart => myCart.map(cartItem => cartItem.id === item.id ? {...cartItem, quantity: e.target.value} : cartItem));
+        const intVal = parseInt(e.target.value);
+        if (e.target.value === '' || !isNaN(intVal)) {
+            setMyCart(myCart => 
+                myCart.map(cartItem => cartItem.id === item.id ? 
+                    {
+                        ...cartItem, 
+                        quantity: e.target.value === '' ? '' : intVal
+                    } : 
+                    cartItem)
+            );
+        }
     }
 
     function handleQuantityBlur(e, item) {
         patchItem(item, 'myCart', {
-                ...item,
                 quantity: e.target.value === '' ? 1 : parseInt(e.target.value)
             }, 
             myCart, setMyCart);

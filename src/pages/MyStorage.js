@@ -46,7 +46,6 @@ function MyStorage() {
             return;
 
         patchItem(item, 'myStorage', {
-                ...item,
                 quantity: e.target.value === '' ? 0 : parseInt(e.target.value)
             }, myStorage, setMyStorage);
     }
@@ -57,7 +56,6 @@ function MyStorage() {
 
     function handleStapleCheck(item) {
         patchItem(item, 'myStorage', {
-                ...item, 
                 isStaple: !item.isStaple
             }, myStorage, setMyStorage);
     }
@@ -67,7 +65,6 @@ function MyStorage() {
             return;
 
         patchItem(item, 'myStorage', {
-                ...item,
                 optQuantity: e.target.value === '' ? '' : parseInt(e.target.value)
             }, myStorage, setMyStorage);
     }
