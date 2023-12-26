@@ -61,11 +61,11 @@ function MyStorage() {
     }
 
     function handleOptQuantityChange(e, item) {
-        if (e.target.value <= 0) 
+        if (e.target.value < 0) 
             return;
 
         patchItem(item, 'myStorage', {
-                optQuantity: e.target.value === '' ? '' : parseInt(e.target.value)
+                optQuantity: e.target.value === '' ? 0 : parseInt(e.target.value)
             }, myStorage, setMyStorage);
     }
 

@@ -74,7 +74,7 @@ function MyCart() {
         }
 
         for (let i = 0; i < myCart.length; i++) {
-            deleteItemSync(myCart[i], 'myCart')
+            await deleteItemSync(myCart[i], 'myCart')
             .catch(error => {
                 console.error('Error deleting myCart Item: ', myCart[i]);
                 alert('Error deleting myCart Item');
