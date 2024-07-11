@@ -12,11 +12,11 @@ The frontend application is developed using react and semantic ui react, and the
 ## Demo
 ![](https://github.com/kjbyun0/phase-2-my-final-project-frontend/blob/main/ForREADME.gif)
 
+Video Walkthrough: [https://youtu.be/4qYEDgdy8Aw](https://youtu.be/4qYEDgdy8Aw)
 
 ## Credits
 All the data in this application is from the H-E-B online grocery store. I followed the H-E-B site to develop my Grocery Shop, My List and My Cart.
 
 ### Deployment
-
 - Frontend: [https://transcendent-gumption-9cb3f3.netlify.app](https://transcendent-gumption-9cb3f3.netlify.app)
 - Backend: [https://kjbyun0-phase2-backend.onrender.com](https://kjbyun0-phase2-backend.onrender.com)
